@@ -4,8 +4,11 @@
 
 ## Resume
 
-1. 读取 `state/{二级菜单}/{需求名称}/requirement_{yyyyMMdd}.md` — 需求文档（必读）
-2. 创建或更新 `state/{二级菜单}/{需求名称}/plan_{yyyyMMdd}.md`
+1. 读取目标 `state/{二级菜单}/{需求名称}/requirement_{yyyyMMdd}.md` — 需求文档（必读）
+2. 读取目标目录基线对账表，按文件映射补充读取方案所需代码或用户指定参考
+3. 创建或更新 `state/{二级菜单}/{需求名称}/plan_{yyyyMMdd}.md`
+
+> 不默认读取全部 refs、全部 state 或无关模块；出现依赖缺口时再定向扩展。
 
 ## 写文件前自检（重点）
 

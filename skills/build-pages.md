@@ -35,10 +35,11 @@
 
 ## Resume
 
-1. 读取 `state/{二级菜单}/{需求名称}/plan_{yyyyMMdd}.md` — 设计文档
-2. 读取 `state/{二级菜单}/{需求名称}/requirement_{yyyyMMdd}.md` — 获取需求细节
-3. 读取 `state/{二级菜单}/{需求名称}/build_log_{yyyyMMdd}.md` — 查看前序进度
-4. 更新 `state/{二级菜单}/{需求名称}/build_log_{yyyyMMdd}.md` Checkpoint
+1. 读取目标 `state/{二级菜单}/{需求名称}/plan_{yyyyMMdd}.md` — 设计文档
+2. 读取目标 `state/{二级菜单}/{需求名称}/requirement_{yyyyMMdd}.md` — 获取需求细节
+3. 读取目标 `state/{二级菜单}/{需求名称}/build_log_{yyyyMMdd}.md` — 查看前序进度
+4. 仅读取文件映射涉及的页面、组件和 Mock；用户未指定视觉参考时不遍历 `refs/`
+5. 更新目标 `state/{二级菜单}/{需求名称}/build_log_{yyyyMMdd}.md` Checkpoint
 
 ---
 
@@ -129,10 +130,10 @@
 
 ### Phase 7: 验证与日志
 
-1. 确认所有页面文件已创建
-2. 确认筛选/搜索/分页逻辑已实现
-3. 确认欢迎页有功能卡片和快捷链接
-4. 确认页面间导航正常
+1. 确认本轮目标页面、组件和 Mock 文件已创建或更新
+2. 确认受影响页面的筛选/搜索/分页/交互逻辑已实现
+3. 仅在路由发生变化或用户指定时验证目标页面导航；不遍历全部页面
+4. 仅在用户指定视觉参考或样式发生变化时执行渲染验证
 5. **记录主要调整至 `state/{二级菜单}/{需求名称}/build_log_{yyyyMMdd}.md`**：
    - 新增页面清单
    - 修改的现有组件

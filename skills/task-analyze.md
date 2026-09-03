@@ -130,8 +130,9 @@
 
 ## 输入
 - 用户输入的需求描述（必读）
-- 参考项目：`D:\work\projects\cms-center\frontend\src\`
-- `refs/` 参考截图
+- 用户明确指定的参考文件或参考页面（优先读取；未指定时不遍历 `refs/`）
+- 目标功能对应 state 目录的基线对账表及必要的前序产物
+- 参考项目：`D:\work\projects\cms-center\frontend\src\`（仅在用户要求或现有实现确有对照需要时读取）
 
 ---
 
