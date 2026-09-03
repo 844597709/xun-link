@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test *)",
+      "Bash(npm run *)",
+      "Bash(timeout 30 bash -c 'until curl -sf http://127.0.0.1:5173 >/dev/null; do sleep 1; done')",
+      "Bash(curl -sf http://127.0.0.1:5173)",
+      "Bash(exit 0)",
+      "Bash(exit 1)",
+      "Bash(command -v chromium-cli)",
+      "Bash(curl -sf http://127.0.0.1:5173/bank-login/consume-interest)",
+      "Bash(curl -sf http://127.0.0.1:5173/operation/interest-system-verify)",
+      "Bash(lsof -ti:5173 -sTCP:LISTEN)",
+      "Bash(xargs -r kill)",
+      "Read(//Users/dan/work/product/base-skill/**)",
+      "Bash(grep -E '/\\(skills|state|CLAUDE\\\\.md\\)\\(/|$\\)|^/Users/dan/work/product/xun-link$')",
+      "Bash(curl -fsS http://127.0.0.1:5173/post-loan/agility-request)",
+      "Bash(curl -fsS http://127.0.0.1:5173/post-loan/agility-request-form?loanId=1)",
+      "Bash(curl -fsS http://127.0.0.1:5173/post-loan/agility-calculate?loanId=1)",
+      "Bash(curl -fsS http://127.0.0.1:5173/post-loan/agility-detail)",
+      "Bash(find '/Users/dan/work/product/refs/灵动重组申请' -maxdepth 1 -type f -print 2>/dev/null | sort)",
+      "Read(//Users/dan/work/product/refs/灵动重组申请/**)",
+      "Read(//Users/dan/work/product/refs/组合还款方式维护/**)",
+      "Bash(find \"/Users/dan/work/product/refs\" -maxdepth 3 -type f | sort | grep -E '还款|组合|产品要素|repay|payment')",
+      "Read(//Users/dan/work/product/refs/**)",
+      "Bash(find \"/Users/dan/work/product/refs\" -maxdepth 3 -type f -print | sort)",
+      "Bash(grep -RIn --exclude-dir=node_modules --exclude-dir=dist --exclude='*.webp' --exclude='*.jpg' -E \"自定义5|自定义6|自定义7|自定义8|关联部件|7/8|比例回车|第二行|第三行\" \"/Users/dan/work/product\")",
+      "Read(//Users/dan/work/product/**)",
+      "Bash(curl -fsS http://127.0.0.1:5173/product/list)",
+      "Bash(chromium-cli --session product-check)"
+    ]
+  }
+}
