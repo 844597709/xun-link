@@ -52,13 +52,35 @@ a { color: inherit; }
 .form-section-card .ant-card-head { min-height: 50px; font-weight: 600; }
 .form-subtitle { margin: 4px 0 18px !important; padding-left: 10px; border-left: 3px solid #1677ff; font-size: 15px !important; }
 .form-actions-card { position: sticky; bottom: 0; z-index: 5; text-align: right; background: rgba(255, 255, 255, .96); }
-.plan-alert { margin-bottom: 16px; }
-.agility-drawer .ant-drawer-body { padding: 16px; background: #f5f7fb; overflow-x: hidden; }
-.agility-drawer .page-container { max-width: none; margin: 0; }
+.agility-drawer .ant-drawer-body { display: flex; min-height: 0; padding: 16px; background: #f5f7fb; overflow: hidden; }
+.agility-drawer .page-container { flex: 1 1 auto; min-height: 0; max-width: none; margin: 0; }
 .agility-drawer .form-section-card { box-shadow: none; }
-.embedded-adjustment-page { padding-bottom: 0; }
-.embedded-adjustment-page .form-actions-card { position: sticky; bottom: -16px; margin: 0 -16px -16px; border-radius: 0; box-shadow: 0 -4px 14px rgba(15, 23, 42, .08); }
+.embedded-adjustment-page { display: flex; flex-direction: column; min-height: 0; padding-bottom: 0; }
+.embedded-adjustment-page > .ant-form { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; }
+.embedded-adjustment-page .adjustment-form-scroll { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; padding-right: 4px; }
+.embedded-adjustment-page .form-actions-card { flex: 0 0 auto; position: relative; bottom: auto; margin: 16px -16px -16px; border-radius: 0; box-shadow: 0 -4px 14px rgba(15, 23, 42, .08); }
+.loan-list-actions { flex-wrap: nowrap !important; gap: 0 !important; white-space: nowrap; }
+.loan-list-actions .ant-btn { padding-inline: 5px; }
 .combo-plan { white-space: pre-line; line-height: 1.8; }
+.repayment-plan-option { width: 100%; max-width: 100%; margin-left: 0; background: #fafcff; }
+.repayment-plan-selector .ant-radio-wrapper { display: flex; width: 100%; align-items: flex-start; }
+.repayment-plan-selector .ant-radio-wrapper > span:last-child { min-width: 0; flex: 1; }
+.repayment-plan-option .ant-card-head { min-height: 40px; padding: 0 12px; }
+.repayment-plan-option .ant-card-body { padding: 8px 12px; }
+.repayment-plan-selector { width: 100%; }
+.scheme-summary { display: block; padding: 12px; color: #465268; background: #fafcff; border: 1px solid #e8f0fe; border-radius: 6px; line-height: 1.7; white-space: normal; }
+.scheme-loading { padding: 18px 0; color: #64748b; text-align: center; }
+.custom-plan-editor { margin-top: 10px; padding: 12px; border: 2px solid #ffccc7; border-radius: 6px; background: #fff; }
+.custom-plan-editor .stage-table td { white-space: nowrap; }
+.custom-plan-editor .ant-form-item { display: inline-block; margin-bottom: 0; vertical-align: middle; }
+.custom-plan-editor .ant-input-number { width: 92px; }
+.custom-plan-editor .ant-select { min-width: 150px; }
+.custom-stage-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+.rich-text-editor { overflow: hidden; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; transition: border-color .2s, box-shadow .2s; }
+.rich-text-editor:focus-within { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(5, 145, 255, .1); }
+.rich-text-content { min-height: 104px; padding: 8px 11px; outline: 0; resize: vertical; overflow: auto; line-height: 1.6; }
+.rich-text-content:empty::before { color: #bfbfbf; content: '请输入申请原因'; pointer-events: none; }
+.plan-card .ant-table-wrapper { overflow-x: auto; }
 .product-modal-readonly-grid, .product-modal-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 16px; }
 .product-modal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .repayment-maintenance-page { padding-bottom: 20px; }
@@ -97,3 +119,176 @@ a { color: inherit; }
 .repayment-actions { display: flex; justify-content: flex-end; gap: 10px; position: sticky; bottom: 0; z-index: 5; margin-top: 16px; background: rgba(255, 255, 255, .96); }
 @media (max-width: 768px) { .product-modal-readonly-grid, .product-modal-grid, .custom-cycle-grid { grid-template-columns: 1fr; } .repayment-method-row { flex-wrap: wrap; } .repayment-method-name { flex-basis: 100%; } .period-tag-list { flex-basis: 100%; } .config-section-header { align-items: flex-start; } }
 @media (max-width: 768px) { .content-shell { padding: 0 12px 24px; } .app-header { padding: 0 12px; } .filter-form .ant-form-item { width: 100%; } .filter-form .ant-form-item-control { min-width: 0; } .login-layout { padding: 18px; } }
+.debt-business-type-group { display: flex; width: 100%; gap: 16px; }
+.debt-business-type-card { display: flex; flex: 1; align-items: flex-start; min-height: 88px; margin: 0 !important; padding: 20px 24px; border: 1px solid #d9e2f2; border-radius: 10px; background: #fafcff; transition: all .2s ease; }
+.debt-business-type-card:hover, .debt-business-type-card.ant-radio-wrapper-checked { border-color: #1677ff; background: #f0f7ff; box-shadow: 0 3px 12px rgba(22,119,255,.12); }
+.debt-business-type-card .ant-radio { margin-top: 4px; }
+.debt-business-type-title, .debt-business-type-subtitle { display: block; }
+.debt-business-type-title { margin-bottom: 8px; color: #172033; font-size: 16px; font-weight: 600; }
+.debt-business-type-subtitle { color: #64748b; font-size: 13px; }
+.debt-section-title { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.debt-notice-alert { margin-top: 12px; }
+.debt-overdue-days { color: #f5222d; font-weight: 600; }
+.debt-scheme-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.debt-scheme-option { display: flex; align-items: flex-start; width: 100%; padding: 12px 14px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; }
+.debt-scheme-option.ant-radio-wrapper-checked { border-color: #1677ff; background: #f7fbff; }
+.debt-scheme-option > span:last-child { flex: 1; }
+.debt-scheme-option .ant-table-wrapper { margin-top: 10px; }
+.table-toolbar { display: flex; justify-content: flex-start; margin-bottom: 14px; }
+.debt-approval-content { max-height: 65vh; overflow: auto; padding-right: 4px; }
+.debt-approval-card { margin-bottom: 12px; }
+.debt-scheme-alert { margin-bottom: 12px; padding: 10px 14px; color: #1554ad; border: 1px solid #b6d7ff; border-radius: 6px; background: #eaf4ff; }
+.debt-drawer-scroll { max-height: calc(100vh - 155px); padding: 0 4px 8px 0; overflow-x: hidden; overflow-y: auto; }
+.debt-drawer-scroll .form-section-card { box-shadow: none; }
+.debt-drawer-actions { position: sticky; bottom: 0; z-index: 5; margin: 0 -4px -24px 0; border: 0; border-radius: 0; box-shadow: 0 -4px 14px rgba(15, 23, 42, .08); text-align: right; }
+.debt-drawer-actions .ant-card-body { padding: 14px 4px; }
+.debt-drawer-scroll .ant-input[disabled], .debt-drawer-scroll .ant-input-number-disabled { color: #667085; background: #f2f4f7; border-color: #d0d5dd; }
+.debt-drawer-scroll .ant-table-wrapper { max-width: 100%; overflow-x: auto; }
+@media (max-width: 768px) { .debt-business-type-group { flex-direction: column; } .debt-business-type-card { flex: none; } .debt-drawer-scroll { max-height: calc(100vh - 175px); } }
+.debt-request-drawer .debt-drawer-scroll > .form-section-card { margin-bottom: 10px; }
+.debt-request-drawer .form-section-card .ant-card-head { min-height: 44px; padding: 0 16px; }
+.debt-request-drawer .form-section-card .ant-card-body { padding: 14px 16px; }
+.debt-request-drawer .ant-form-item { margin-bottom: 12px; }
+.debt-request-drawer .ant-form-item:last-child { margin-bottom: 0; }
+.debt-request-drawer .repayment-plan-selector { margin-bottom: 10px; }
+.manual-repayment-page .manual-filter-card { overflow: hidden; }
+.manual-repayment-page .manual-filter-card .filter-form > .ant-space { display: grid; grid-template-columns: repeat(6, minmax(130px, 1fr)); width: 100%; }
+.manual-repayment-page .manual-filter-card .filter-form .ant-form-item { min-width: 0; }
+.manual-repayment-page .manual-filter-card .filter-form .ant-form-item-control, .manual-repayment-page .manual-filter-card .filter-form .ant-form-item-control-input { min-width: 0; }
+.manual-repayment-page .manual-filter-card .filter-form .ant-select, .manual-repayment-page .manual-filter-card .filter-form .ant-input { width: 100%; }
+.manual-table-toolbar { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.manual-table-toolbar .ant-btn:disabled { color: #8c8c8c; background: #f5f5f5; border-color: #d9d9d9; }
+.manual-repayment-drawer .ant-drawer-body { display: flex; min-height: 0; padding: 16px; background: #f5f7fb; overflow: hidden; }
+.manual-drawer-content, .manual-drawer-scroll { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
+.manual-drawer-scroll { overflow-x: hidden; overflow-y: auto; padding-right: 4px; }
+.manual-section-card { margin-bottom: 14px; border: 0; box-shadow: 0 2px 10px rgba(15, 23, 42, .04); }
+.manual-section-card .ant-card-head { min-height: 46px; }
+.manual-basic-info .ant-descriptions-item-label { color: #64748b; }
+.manual-settings-grid { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); column-gap: 28px; }
+.manual-settings-grid .ant-form-item { margin-bottom: 14px; }
+.manual-amount-tip { grid-column: 2; align-self: center; margin-bottom: 14px; color: #64748b; font-size: 12px; }
+.manual-drawer-actions { position: sticky; bottom: 0; z-index: 5; flex: 0 0 auto; margin: 0 0 -14px; border: 0; border-radius: 0; box-shadow: 0 -4px 14px rgba(15, 23, 42, .08); text-align: right; }
+.manual-drawer-actions .ant-card-body { padding: 14px 4px; }
+.manual-plan-table, .manual-summary-table { max-width: 100%; overflow-x: auto; }
+.manual-summary-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.manual-summary-table .ant-table-summary { background: #fafafa; }
+.manual-summary-table .manual-overdue-row > td { color: #cf1322; background: #fff1f0 !important; }
+.manual-summary-table .manual-overdue-row > td:first-child::after { content: '不允许提前还款'; display: block; color: #cf1322; font-size: 12px; }
+@media (max-width: 900px) { .manual-repayment-page .manual-filter-card .filter-form > .ant-space { grid-template-columns: repeat(2, minmax(160px, 1fr)); } .manual-settings-grid { grid-template-columns: 1fr; } .manual-amount-tip { grid-column: 1; } }
+@media (max-width: 520px) { .manual-repayment-page .manual-filter-card .filter-form > .ant-space { grid-template-columns: 1fr; } .manual-table-toolbar { flex-wrap: wrap; } }
+.debt-request-drawer .custom-stage-period-field { display: inline-flex; align-items: flex-start; min-height: 32px; margin: 0 !important; vertical-align: top; }
+.debt-request-drawer .custom-stage-period-field .ant-form-item-control-input { min-height: 32px; }
+.debt-request-drawer .custom-stage-period-field .ant-input-number { height: 32px; }
+.debt-request-drawer .custom-stage-period-separator { display: inline-flex; align-items: center; height: 32px; vertical-align: top; }
+.in-loan-drawer .ant-drawer-body { display: flex; min-height: 0; padding: 16px; background: #f5f7fb; overflow: hidden; }
+.in-loan-drawer .page-container { flex: 1 1 auto; min-height: 0; max-width: none; margin: 0; }
+.in-loan-drawer .adjustment-form-scroll { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; padding-right: 4px; }
+.in-loan-drawer .form-section-card { box-shadow: none; }
+.in-loan-drawer .in-loan-sub-card { margin: 0 0 16px; border: 1px solid #e8f0fe; box-shadow: none; }
+.in-loan-drawer .in-loan-common-fields { margin-top: 2px; }
+.in-loan-drawer .in-loan-plan-table { max-width: 100%; overflow-x: auto; }
+.in-loan-drawer .in-loan-drawer-actions { flex: 0 0 auto; position: relative; bottom: auto; margin: 16px -16px -16px; border-radius: 0; box-shadow: 0 -4px 14px rgba(15, 23, 42, .08); }
+.in-loan-adjustment-page .table-card .ant-table-wrapper { max-width: 100%; overflow-x: auto; }
+@media (max-width: 768px) { .in-loan-drawer .ant-drawer-body { padding: 12px; } .in-loan-drawer .in-loan-drawer-actions { margin: 12px -12px -12px; } }
+.extension-page .table-card .ant-table-wrapper { max-width: 100%; overflow-x: auto; }
+.extension-page .table-card .ant-table-cell-fix-right { background: #fff; }
+.extension-page .loan-list-actions { white-space: nowrap; }
+.extension-page .loan-list-actions .ant-btn-primary { padding-inline: 8px; }
+.extension-page .ant-table-tbody > tr:hover > td.ant-table-cell-fix-right { background: #f5faff; }
+.extension-drawer .ant-drawer-body { display: flex; min-height: 0; padding: 16px; background: #f5f7fb; overflow: hidden; }
+.extension-drawer-content { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
+.extension-drawer-scroll { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; padding-right: 4px; }
+.extension-section-card { margin-bottom: 14px; border: 0; box-shadow: 0 2px 10px rgba(15, 23, 42, .04); }
+.extension-section-card .ant-card-head { min-height: 46px; }
+.extension-section-card .ant-form-item { margin-bottom: 14px; }
+.extension-plan-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+.extension-plan-heading .ant-typography { margin-bottom: 10px; }
+.extension-plan-table { max-width: 100%; overflow-x: auto; }
+.extension-plan-table .ant-table-tbody .extension-settled-row > td { color: #8c8c8c; background: #fafafa; }
+.extension-history-section { padding: 14px; border: 1px solid transparent; border-radius: 8px; transition: background .2s, border-color .2s, box-shadow .2s; }
+.extension-history-section > .ant-typography { margin-top: 0; }
+.extension-history-highlight { border-color: #91caff; background: #e6f4ff; box-shadow: 0 0 0 3px rgba(22,119,255,.12); }
+.extension-drawer-actions { flex: 0 0 auto; margin: 14px -4px -16px; border: 0; border-radius: 0; box-shadow: 0 -4px 14px rgba(15, 23, 42, .08); text-align: right; }
+.extension-drawer-loading { height: 100%; display: grid; place-items: center; }
+@media (max-width: 768px) { .extension-drawer .ant-drawer-body { padding: 12px; } .extension-drawer-actions { margin-bottom: -12px; } }
+.subsidy-detail-page { padding-bottom: 20px; }
+.subsidy-detail-card { margin-bottom: 16px; border: 0; border-radius: 12px; box-shadow: 0 4px 20px rgba(15, 23, 42, .04); }
+.subsidy-detail-card .ant-card-head { min-height: 50px; font-weight: 600; }
+.subsidy-detail-card .ant-descriptions { overflow-x: auto; }
+.detail-state { min-height: 360px; display: grid; place-items: center; }
+.voucher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+.voucher-grid .ant-card { border-color: #e8f0fe; }
+.subsidy-modal-section { margin-bottom: 16px; background: #fafcff; }
+.modal-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; }
+.modal-info-grid div { display: flex; flex-direction: column; gap: 4px; }
+.modal-info-grid span { color: #64748b; font-size: 12px; }
+.subsidy-placeholder-page .ant-card { max-width: 900px; margin: 40px auto; border: 0; border-radius: 12px; }
+.subsidy-detail-drawer .ant-drawer-body { display: flex; min-width: 0; min-height: 0; padding: 16px; background: #f5f7fb; overflow: hidden; }
+.subsidy-detail-drawer .subsidy-detail-page { flex: 1 1 auto; min-width: 0; max-width: none; margin: 0; padding-bottom: 0; overflow-x: hidden; }
+.subsidy-detail-drawer .subsidy-detail-card { box-shadow: 0 2px 12px rgba(15, 23, 42, .05); }
+.subsidy-detail-drawer .detail-state { min-height: 320px; flex: 1 1 auto; }
+.detail-table-scroll, .loan-interest-table-scroll { max-width: 100%; overflow-x: auto; }
+.detail-table-scroll .ant-table, .loan-interest-table-scroll .ant-table { min-width: max-content; }
+.loan-interest-detail-card .ant-tabs-content-holder { min-width: 0; }
+.loan-interest-tab-content { min-width: 0; }
+.loan-interest-flow-tab { padding-top: 2px; }
+.loan-interest-flow-summary { margin-bottom: 16px; padding: 16px; border: 1px solid #dcecff; border-radius: 10px; background: linear-gradient(135deg, #f8fbff 0%, #fff 100%); }
+.loan-interest-flow-summary-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.loan-interest-flow-summary-header strong { margin-right: 12px; color: #172033; font-size: 15px; }
+.loan-interest-flow-summary-header span { color: #86909c; font-size: 13px; }
+.loan-interest-flow-summary-header .loan-interest-flow-success { color: #389e0d; }
+.loan-interest-flow-amount-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.loan-interest-flow-amount { min-width: 0; padding: 12px 14px; border-left: 3px solid #1677ff; border-radius: 6px; background: #fff; box-shadow: 0 2px 8px rgba(15, 23, 42, .04); }
+.loan-interest-flow-amount span, .loan-interest-flow-meta span { display: block; margin-bottom: 6px; color: #667085; font-size: 12px; }
+.loan-interest-flow-amount strong { display: block; overflow-wrap: anywhere; color: #1677ff; font-size: 18px; line-height: 1.3; }
+.loan-interest-flow-amount-success { border-left-color: #52c41a; }
+.loan-interest-flow-amount-success strong { color: #389e0d; }
+.loan-interest-flow-amount-warning { border-left-color: #faad14; }
+.loan-interest-flow-amount-warning strong { color: #d48806; }
+.loan-interest-flow-amount-danger { border-left-color: #ff4d4f; }
+.loan-interest-flow-amount-danger strong { color: #cf1322; }
+.loan-interest-flow-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #d9e2f2; }
+.loan-interest-flow-meta > div { min-width: 0; }
+.loan-interest-flow-meta strong { display: block; overflow-wrap: anywhere; color: #344054; font-weight: 500; }
+.loan-interest-detail-card .ant-table-thead > tr:first-child > th { color: #344054; background: #f0f6ff; font-weight: 600; }
+.loan-interest-detail-card .ant-table-thead > tr:nth-child(2) > th { color: #667085; background: #fafcff; }
+@media (max-width: 768px) { .modal-info-grid { grid-template-columns: 1fr; } .subsidy-detail-drawer .ant-drawer-body { padding: 12px; } .loan-interest-flow-amount-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .loan-interest-flow-summary { padding: 12px; } }
+@media (max-width: 480px) { .loan-interest-flow-summary-header { align-items: flex-start; flex-direction: column; } .loan-interest-flow-meta { grid-template-columns: 1fr; } }
+.approval-pending-page { position: relative; padding-bottom: 20px; }
+.approval-watermark { position: fixed; top: 46%; left: 42%; z-index: 0; color: rgba(22, 119, 255, .055); font-size: 32px; font-weight: 700; letter-spacing: 4px; pointer-events: none; transform: rotate(-24deg); user-select: none; }
+.approval-pending-page > *:not(.approval-watermark) { position: relative; z-index: 1; }
+.approval-pending-page .filter-card, .approval-pending-page .table-card { position: relative; z-index: 1; }
+.approval-pagination { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 18px; color: #667085; }
+.approval-pagination .ant-pagination { margin: 0 auto; }
+.approval-detail-drawer .ant-drawer-body { padding: 16px; background: #f5f7fb; overflow: hidden; }
+.approval-detail-scroll { height: 100%; min-width: 0; overflow-x: hidden; overflow-y: auto; padding-right: 4px; }
+.approval-detail-section { margin-bottom: 14px; border: 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(15, 23, 42, .04); }
+.approval-detail-section .ant-card-head { min-height: 46px; padding: 0 16px; border-bottom: 1px solid #edf1f7; font-size: 15px; font-weight: 600; }
+.approval-detail-section .ant-card-body { padding: 16px; }
+.approval-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px 32px; }
+.approval-info-grid-1 { grid-template-columns: minmax(0, 1fr); }
+.approval-info-item { display: grid; grid-template-columns: minmax(100px, 34%) minmax(0, 1fr); align-items: start; min-width: 0; line-height: 1.55; }
+.approval-info-item span, .approval-single-fields span, .approval-reason span { color: #667085; }
+.approval-info-item strong, .approval-single-fields strong, .approval-reason strong { min-width: 0; color: #1d2939; font-weight: 400; overflow-wrap: anywhere; }
+.approval-single-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px 32px; }
+.approval-single-fields > div, .approval-reason { display: grid; grid-template-columns: minmax(150px, 34%) minmax(0, 1fr); gap: 8px; line-height: 1.55; }
+.approval-table-scroll { max-width: 100%; overflow-x: auto; }
+.approval-table-scroll .ant-table { min-width: max-content; }
+.approval-summary-list { display: flex; flex-direction: column; gap: 18px; }
+.approval-summary-block { min-width: 0; }
+.approval-summary-block > .ant-typography { display: block; margin-bottom: 10px; color: #344054; }
+.approval-scheme-title { margin-bottom: 12px; }
+.approval-attachments { display: flex; flex-direction: column; gap: 8px; }
+.approval-attachment { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; padding: 8px 10px; border: 1px solid #edf1f7; border-radius: 6px; background: #fafcff; }
+.approval-attachment > span { min-width: 0; overflow-wrap: anywhere; }
+.approval-state-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.approval-state-compare > div { min-width: 0; padding: 12px 14px; border: 1px solid #edf1f7; border-radius: 6px; background: #fafcff; }
+.approval-state-compare .approval-info-grid { margin-top: 14px; }
+.approval-reason { margin-top: 18px; }
+.approval-divider { margin: 2px 0 14px; }
+.approval-timeline-title { display: flex; align-items: center; gap: 8px; color: #1d2939; font-weight: 600; }
+.approval-timeline-title .ant-tag { margin: 0; font-weight: 400; }
+.approval-muted { margin-top: 5px; color: #98a2b3; font-size: 12px; }
+@media (max-width: 900px) { .approval-detail-drawer { width: 100% !important; } .approval-info-grid, .approval-single-fields, .approval-state-compare { grid-template-columns: 1fr; } .approval-watermark { left: 25%; } }
+@media (max-width: 600px) { .approval-info-item, .approval-single-fields > div, .approval-reason { grid-template-columns: minmax(90px, 38%) minmax(0, 1fr); } .approval-pagination { flex-wrap: wrap; justify-content: center; } .approval-pagination > span { width: 100%; text-align: left; } }
+@media (max-width: 768px) { .modal-info-grid { grid-template-columns: 1fr; } }

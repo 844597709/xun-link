@@ -1,4 +1,4 @@
-import { Descriptions, Form, Input, InputNumber, Modal, Select } from 'antd';
+import { Descriptions, Drawer, Form, Input, InputNumber, Select, Space, Button } from 'antd';
 import { useEffect } from 'react';
 import type { ProductEditValues, ProductRecord } from '../../../../types';
 import { creditTypeOptions, loanTypeOptions, updateProduct } from '../../../../mock/product';
@@ -39,15 +39,13 @@ export default function ProductInfoModal({ open, mode, product, onClose, onSaved
 
   if (!product) return null;
   return (
-    <Modal
+    <Drawer
       open={open}
       title={mode === 'view' ? '查看产品信息' : '编辑产品信息'}
-      width={720}
+      width="min(720px, 100vw)"
       destroyOnClose
-      onCancel={onClose}
-      onOk={mode === 'edit' ? () => void form.submit() : onClose}
-      okText={mode === 'edit' ? '保存' : '关闭'}
-      cancelButtonProps={{ style: mode === 'view' ? { display: 'none' } : undefined }}
+      onClose={onClose}
+      footer={<Space><Button onClick={onClose}>取消</Button>{mode === 'edit' ? <Button type="primary" onClick={() => void form.submit()}>保存</Button> : null}</Space>}
     >
       {mode === 'view' ? (
         <Descriptions bordered column={2} size="small">
@@ -82,6 +80,6 @@ export default function ProductInfoModal({ open, mode, product, onClose, onSaved
           </Descriptions>
         </Form>
       )}
-    </Modal>
+    </Drawer>
   );
 }

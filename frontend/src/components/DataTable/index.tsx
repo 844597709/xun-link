@@ -1,5 +1,5 @@
 import { Empty, Table } from 'antd';
-import type { TableColumnsType, TablePaginationConfig } from 'antd';
+import type { TableColumnsType, TablePaginationConfig, TableProps } from 'antd';
 
 interface DataTableProps<T extends object> {
   columns: TableColumnsType<T>;
@@ -8,6 +8,7 @@ interface DataTableProps<T extends object> {
   pagination: { current: number; pageSize: number; total: number };
   onPageChange: (page: number, pageSize: number) => void;
   rowKey?: string | ((record: T) => string);
+  rowSelection?: TableProps<T>['rowSelection'];
 }
 
 export default function DataTable<T extends object>({
@@ -17,6 +18,7 @@ export default function DataTable<T extends object>({
   pagination,
   onPageChange,
   rowKey = 'id',
+  rowSelection,
 }: DataTableProps<T>) {
   const tablePagination: TablePaginationConfig = {
     current: pagination.current,
@@ -34,6 +36,7 @@ export default function DataTable<T extends object>({
       columns={columns}
       dataSource={dataSource}
       loading={loading}
+      rowSelection={rowSelection}
       pagination={tablePagination}
       locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无数据" /> }}
       scroll={{ x: 'max-content' }}

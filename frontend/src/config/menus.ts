@@ -20,13 +20,13 @@ export const menuItems: MenuItem[] = [
   { id: 14, mpid: '12', name: '调整明细', route: '/post-loan/extension-detail', icon: 'TableOutlined' },
 
   // 在贷要素调整
-  { id: 15, mpid: '-1', name: '在贷要素调整', icon: 'SettingOutlined' },
+  { id: 15, mpid: '2', name: '在贷要素调整', icon: 'SettingOutlined' },
   { id: 16, mpid: '15', name: '调整申请', route: '/post-loan/adjust-request', icon: 'EditOutlined' },
   { id: 17, mpid: '15', name: '调整明细', route: '/post-loan/adjust-detail', icon: 'TableOutlined' },
 
   // 运营管理
   { id: 18, mpid: '-1', name: '运营管理', icon: 'ShopOutlined' },
-  { id: 19, mpid: '18', name: '手动还款', route: '/repayment/manual', icon: 'PayCircleOutlined' },
+  { id: 19, mpid: '18', name: '手动还款', route: '/operation/manual-repayment', icon: 'PayCircleOutlined' },
   { id: 20, mpid: '18', name: '产品管理', icon: 'AppstoreOutlined' },
   { id: 21, mpid: '20', name: '产品信息列表', route: '/product/list', icon: 'UnorderedListOutlined' },
   { id: 22, mpid: '18', name: '贴息管理', icon: 'MoneyCollectOutlined' },
@@ -44,8 +44,9 @@ export const menuItems: MenuItem[] = [
 
   // 银行宝签约
   { id: 32, mpid: '-1', name: '银行宝签约', icon: 'BankOutlined' },
-  { id: 33, mpid: '32', name: '灵活重组签约', route: '/bank-login/agility-sign', icon: 'RocketOutlined' },
+  { id: 33, mpid: '32', name: '灵动重组签约', route: '/bank-login/agility-sign', icon: 'RocketOutlined' },
   { id: 34, mpid: '32', name: '债务重组签约', route: '/bank-login/debt-sign', icon: 'FileTextOutlined' },
-  { id: 35, mpid: '32', name: '组合还款提现', route: '/bank-login/repayment-withdraw', icon: 'WalletOutlined' },
+  { id: 35, mpid: '32', name: '组合还款提现', route: '/bank-login/combo-repayment-withdrawal', icon: 'WalletOutlined' },
   { id: 36, mpid: '32', name: '消费贷款贴息', route: '/bank-login/consume-interest', icon: 'ShoppingOutlined' },
+  { id: 37, mpid: '32', name: '跨年财政贴息', route: '/bank-login/cross-year-interest', icon: 'CalendarOutlined' },
 ];

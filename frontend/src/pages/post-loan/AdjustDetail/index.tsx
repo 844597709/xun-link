@@ -1,4 +1,5 @@
-import ModuleListPage from '../../../components/ModuleListPage';
-import { businessPageConfigs } from '../../pageConfigs';
-import type { BusinessRecord } from '../../../types';
-export default function AdjustDetail() { return <ModuleListPage<BusinessRecord> {...businessPageConfigs.adjustDetail} />; }
+import AdjustmentListPage from '../AdjustmentListPage';
+
+export default function AdjustDetail() {
+  return <AdjustmentListPage isDetail />;
+}

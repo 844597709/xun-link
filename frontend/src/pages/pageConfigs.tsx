@@ -1,18 +1,26 @@
-import { Button, Modal, Space, Tag, message } from 'antd';
+import { Button, Tag } from 'antd';
 import type { TableColumnsType } from 'antd';
 import type { Article, BusinessRecord, Category, Role, User } from '../types';
 import type { FilterConfig } from '../components/Filter';
+import OperationCell from '../components/OperationCell';
+import type { ModuleListAction, ModuleListActionHandlers, ModuleListColumns } from '../components/ModuleListPage';
 import { getArticles, getBusinessList, getCategories, getRoles, getUsers, type BusinessModuleKey } from '../mock';
 
 const statuses = [{ label: '启用', value: '启用' }, { label: '停用', value: '停用' }];
 const businessStatuses = ['待处理', '处理中', '已完成', '已驳回'].map((value) => ({ label: value, value }));
 
-function actionButtons(id: number, canView = false) {
-  return <Space size="small">
-    {canView && <Button type="link" size="small" onClick={() => message.info(`查看记录 ${id}`)}>查看</Button>}
-    <Button type="link" size="small" onClick={() => message.info(`编辑记录 ${id}`)}>编辑</Button>
-    <Button type="link" danger size="small" onClick={() => Modal.confirm({ title: '确认删除', content: `确定删除记录 ${id} 吗？`, onOk: () => message.success('原型已接收删除操作') })}>删除</Button>
-  </Space>;
+function actionColumn<T extends object>(handlers: ModuleListActionHandlers<T>, canView = false) {
+  return {
+    title: '操作', key: 'actions', fixed: 'right' as const, width: canView ? 160 : 125,
+    render: (_: unknown, record: T) => <OperationCell
+      items={[
+        ...(canView ? [{ key: 'view', label: '查看' }] : []),
+        { key: 'edit', label: '编辑' },
+        { key: 'delete', label: '删除', danger: true },
+      ]}
+      onAction={(key) => handlers.openAction(key as ModuleListAction, record)}
+    />,
+  };
 }
 
 export const userFilters: FilterConfig[] = [
@@ -21,19 +29,18 @@ export const userFilters: FilterConfig[] = [
   { key: 'status', label: '状态', type: 'select', options: statuses },
 ];
 
-export const userColumns: TableColumnsType<User> = [
+export const userColumns = (handlers: ModuleListActionHandlers<User>): TableColumnsType<User> => [
   { title: 'ID', dataIndex: 'id', width: 80 }, { title: '用户名', dataIndex: 'username' }, { title: '邮箱', dataIndex: 'email' },
   { title: '角色', dataIndex: 'role' }, { title: '状态', dataIndex: 'status', render: (value: User['status']) => <Tag color={value === '启用' ? 'green' : 'default'}>{value}</Tag> },
-  { title: '创建时间', dataIndex: 'createdAt' }, { title: '操作', key: 'actions', fixed: 'right', render: (_, record) => actionButtons(record.id) },
+  { title: '创建时间', dataIndex: 'createdAt' }, actionColumn(handlers),
 ];
 
 export const roleFilters: FilterConfig[] = [
   { key: 'name', label: '角色名称', type: 'input' }, { key: 'status', label: '状态', type: 'select', options: statuses },
 ];
-export const roleColumns: TableColumnsType<Role> = [
+export const roleColumns = (handlers: ModuleListActionHandlers<Role>): TableColumnsType<Role> => [
   { title: 'ID', dataIndex: 'id', width: 80 }, { title: '名称', dataIndex: 'name' }, { title: '描述', dataIndex: 'description' },
-  { title: '用户数', dataIndex: 'userCount' }, { title: '状态', dataIndex: 'status', render: (value: Role['status']) => <Tag color={value === '启用' ? 'green' : 'default'}>{value}</Tag> },
-  { title: '操作', key: 'actions', fixed: 'right', render: (_, record) => actionButtons(record.id) },
+  { title: '用户数', dataIndex: 'userCount' }, { title: '状态', dataIndex: 'status', render: (value: Role['status']) => <Tag color={value === '启用' ? 'green' : 'default'}>{value}</Tag> }, actionColumn(handlers),
 ];
 
 export const articleFilters: FilterConfig[] = [
@@ -42,27 +49,25 @@ export const articleFilters: FilterConfig[] = [
   { key: 'status', label: '状态', type: 'select', options: [{ label: '已发布', value: '已发布' }, { label: '草稿', value: '草稿' }] },
   { key: 'createdAt', label: '创建时间', type: 'datePicker' },
 ];
-export const articleColumns: TableColumnsType<Article> = [
+export const articleColumns = (handlers: ModuleListActionHandlers<Article>): TableColumnsType<Article> => [
   { title: 'ID', dataIndex: 'id', width: 80 }, { title: '标题', dataIndex: 'title', width: 280 }, { title: '分类', dataIndex: 'category' },
   { title: '作者', dataIndex: 'author' }, { title: '状态', dataIndex: 'status', render: (value: Article['status']) => <Tag color={value === '已发布' ? 'blue' : 'orange'}>{value}</Tag> },
-  { title: '创建时间', dataIndex: 'createdAt' }, { title: '操作', key: 'actions', fixed: 'right', render: (_, record) => actionButtons(record.id, true) },
+  { title: '创建时间', dataIndex: 'createdAt' }, actionColumn(handlers, true),
 ];
 
 export const categoryFilters: FilterConfig[] = [
   { key: 'name', label: '分类名称', type: 'input' }, { key: 'status', label: '状态', type: 'select', options: statuses },
 ];
-export const categoryColumns: TableColumnsType<Category> = [
+export const categoryColumns = (handlers: ModuleListActionHandlers<Category>): TableColumnsType<Category> => [
   { title: 'ID', dataIndex: 'id', width: 80 }, { title: '名称', dataIndex: 'name' }, { title: '上级分类', dataIndex: 'parentName' },
-  { title: '排序', dataIndex: 'sort' }, { title: '状态', dataIndex: 'status', render: (value: Category['status']) => <Tag color={value === '启用' ? 'green' : 'default'}>{value}</Tag> },
-  { title: '操作', key: 'actions', fixed: 'right', render: (_, record) => actionButtons(record.id) },
+  { title: '排序', dataIndex: 'sort' }, { title: '状态', dataIndex: 'status', render: (value: Category['status']) => <Tag color={value === '启用' ? 'green' : 'default'}>{value}</Tag> }, actionColumn(handlers),
 ];
 
-const businessColumns: TableColumnsType<BusinessRecord> = [
+const businessColumns = (handlers: ModuleListActionHandlers<BusinessRecord>): TableColumnsType<BusinessRecord> => [
   { title: '编号', dataIndex: 'referenceNo', width: 180 }, { title: '客户名称', dataIndex: 'customer', width: 180 },
   { title: '金额（元）', dataIndex: 'amount', render: (value: number) => value.toLocaleString('zh-CN') },
   { title: '状态', dataIndex: 'status', render: (value: BusinessRecord['status']) => <Tag color={value === '已完成' ? 'green' : value === '已驳回' ? 'red' : 'blue'}>{value}</Tag> },
-  { title: '更新时间', dataIndex: 'updatedAt' }, { title: '备注', dataIndex: 'remark' },
-  { title: '操作', key: 'actions', fixed: 'right', render: (_, record) => actionButtons(record.id, true) },
+  { title: '更新时间', dataIndex: 'updatedAt' }, { title: '备注', dataIndex: 'remark' }, actionColumn(handlers, true),
 ];
 
 export const businessFilters: FilterConfig[] = [
@@ -73,7 +78,7 @@ export interface BusinessPageConfig {
   title: string;
   description: string;
   filters: FilterConfig[];
-  columns: TableColumnsType<BusinessRecord>;
+  columns: ModuleListColumns<BusinessRecord>;
   fetcher: (params: { page: number; pageSize: number; [key: string]: unknown }) => ReturnType<typeof getBusinessList>;
 }
 
@@ -84,7 +89,7 @@ const businessTitles: Record<BusinessModuleKey, string> = {
   interestRule: '贴息规则配置', interestAgreement: '协议签署', interestFlow: '贴息流水',
   interestSystemVerify: '系统核定', interestVerify: '贴息核定', loanInterest: '贷款贴息', consumeInterest: '消费贴息',
   productList: '产品信息列表', repayment: '手动还款', approvalPending: '待审列表',
-  agilitySign: '灵活重组签约', debtSign: '债务重组签约', repaymentWithdraw: '组合还款提现',
+  agilitySign: '灵动重组签约', debtSign: '债务重组签约', repaymentWithdraw: '组合还款提现',
   bankConsumeInterest: '消费贷款贴息',
 };
 
@@ -93,7 +98,7 @@ export const businessPageConfigs = Object.fromEntries(
     title: businessTitles[key],
     description: `查看和处理${businessTitles[key]}相关业务记录`,
     filters: businessFilters,
-    columns: businessColumns,
+    columns: (handlers: ModuleListActionHandlers<BusinessRecord>) => businessColumns(handlers),
     fetcher: (params: { page: number; pageSize: number; [key: string]: unknown }) => getBusinessList(key, params),
   }]),
 ) as Record<BusinessModuleKey, BusinessPageConfig>;

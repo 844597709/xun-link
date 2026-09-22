@@ -10,25 +10,29 @@ const requestedRoutes = [
   '/post-loan/litigation-execution', '/post-loan/litigation-detail',
   '/post-loan/extension-request', '/post-loan/extension-detail',
   '/post-loan/adjust-request', '/post-loan/adjust-detail',
-  '/repayment/manual', '/product/list',
+  '/operation/manual-repayment', '/product/list',
   '/operation/interest-rule', '/operation/interest-agreement', '/operation/interest-flow',
   '/operation/interest-system-verify', '/operation/interest-verify',
   '/operation/loan-interest', '/operation/consume-interest',
   '/approval/pending', '/bank-login/agility-sign', '/bank-login/debt-sign',
-  '/bank-login/repayment-withdraw', '/bank-login/consume-interest',
+  '/bank-login/combo-repayment-withdrawal', '/bank-login/consume-interest', '/bank-login/cross-year-interest',
 ];
 
 describe('application menu configuration', () => {
   it('contains the requested three-level hierarchy', () => {
     const tree = arrayToTree(menuItems);
     expect(tree.map((item) => item.name)).toEqual([
-      '欢迎页', '贷后纾困', '在贷要素调整', '运营管理', '审批管理', '银行宝签约',
+      '欢迎页', '贷后纾困', '运营管理', '审批管理', '银行宝签约',
     ]);
-    expect(tree[1].children?.map((item) => item.name)).toEqual(['灵动重组', '债务重组', '诉讼回款', '延展期']);
+    expect(tree[1].children?.map((item) => item.name)).toEqual(['灵动重组', '债务重组', '诉讼回款', '延展期', '在贷要素调整']);
     expect(tree[1].children?.[0].children?.map((item) => item.name)).toEqual(['调整申请', '调整明细']);
-    expect(tree[3].children?.[1].children?.[0].name).toBe('产品信息列表');
-    expect(tree[3].children?.[2].children?.map((item) => item.name)).toEqual([
+    expect(tree[1].children?.[4].children?.map((item) => item.name)).toEqual(['调整申请', '调整明细']);
+    expect(tree[2].children?.[1].children?.[0].name).toBe('产品信息列表');
+    expect(tree[2].children?.[2].children?.map((item) => item.name)).toEqual([
       '贴息规则配置', '协议签署', '贴息流水', '系统核定', '贴息核定', '贷款贴息', '消费贴息',
+    ]);
+    expect(tree[4].children?.map((item) => item.name)).toEqual([
+      '灵动重组签约', '债务重组签约', '组合还款提现', '消费贷款贴息', '跨年财政贴息',
     ]);
   });
 

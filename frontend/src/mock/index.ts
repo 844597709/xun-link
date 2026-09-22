@@ -1,5 +1,11 @@
 import type { ApiResponse, Article, BusinessRecord, Category, ListData, Role, User } from '../types';
+import { getApprovalRecords, claimApproval, approvalRecords } from './approval';
+
+export { getApprovalRecords, claimApproval, approvalRecords };
 import { delay } from '../utils';
+
+export type { CrossYearBusinessEntry, CrossYearPolicyYearState, CrossYearScheme, CrossYearSchemeId, CrossYearPolicyYear, CrossYearAgreementStatus } from '../types/crossYearInterest';
+export { crossYearBusinessEntries, crossYearSchemes, crossYearYears, findCrossYearYear } from './crossYearInterest';
 
 export interface ListParams {
   page: number;
@@ -118,7 +124,7 @@ const businessLabels: Record<BusinessModuleKey, string> = {
   interestRule: '贴息规则配置', interestAgreement: '协议签署', interestFlow: '贴息流水',
   interestSystemVerify: '系统核定', interestVerify: '贴息核定', loanInterest: '贷款贴息', consumeInterest: '消费贴息',
   productList: '产品信息列表', repayment: '手动还款', approvalPending: '待审列表',
-  agilitySign: '灵活重组签约', debtSign: '债务重组签约', repaymentWithdraw: '组合还款提现',
+  agilitySign: '灵动重组签约', debtSign: '债务重组签约', repaymentWithdraw: '组合还款提现',
   bankConsumeInterest: '消费贷款贴息',
 };
 
@@ -151,4 +157,154 @@ export async function getBusinessList(
   return respond(paginate(filtered, Number(params.page), Number(params.pageSize)));
 }
 
-export const businessModuleNames = businessLabels;
+export type { AgilitySignData, AgilitySignResponse, SignAdjustment, SignRepaymentPlan, SignSchemeStage, SignPlanStatus } from '../types/agilitySign';
+export { getAgilitySignData } from './agilitySign';
+
+export type { DebtSignData, DebtSignLoanNote, DebtSignNewLoanPlan, DebtSignRepaymentItem, DebtSignResponse, DebtSignStep, DebtSignTodo, DebtSignTodoStatus, DebtSignMode, DebtSignSubmitResponse } from '../types/debtSign';
+export { getDebtSignData, submitDebtSign } from './debtSign';
+
+export type {
+  ComboBankCard,
+  ComboCoupon,
+  ComboCreditSummary,
+  ComboLoanPayload,
+  ComboOverlay,
+  ComboPanel,
+  ComboPlanParams,
+  ComboPlanResponse,
+  ComboRepaymentData,
+  ComboRepaymentItem,
+  ComboRepaymentRecord,
+  ComboRepaymentResponse,
+  ComboRepaymentScheme,
+  ComboRepaymentStage,
+  ComboSubmitResponse,
+  ComboSubmitResult,
+  ComboTermOption,
+} from '../types/comboRepaymentWithdrawal';
+export {
+  bankCards,
+  comboRepaymentData,
+  coupons,
+  getComboRepaymentData,
+  getComboRepaymentPlan,
+  purposes,
+  submitComboRepayment,
+  termOptions,
+} from './comboRepaymentWithdrawal';
+
+
+export {
+  calculateExtensionPlan,
+  deleteExtensionDetail,
+  extensionAdjustmentTypes,
+  extensionApplicationStatuses,
+  extensionGlobalStatuses,
+  extensionDetails,
+  extensionInstitutions,
+  extensionLoans,
+  extensionLoanStatuses,
+  extensionProducts,
+  extensionHistories,
+  getExtensionDetails,
+  getExtensionHistory,
+  getExtensionLoan,
+  getExtensionLoans,
+  revokeExtensionDetail,
+  submitExtensionApplication,
+} from './extension';
+export type { ExtensionListParams } from '../types';
+
+export {
+  adjustmentElementOptions,
+  calculateInLoanPlan,
+  cycleOptions,
+  getInLoanAdjustmentDetails,
+  getInLoanLoan,
+  getInLoanLoans,
+  inLoanApplications,
+  inLoanChannels,
+  inLoanInstitutions,
+  inLoanLoans,
+  inLoanProducts,
+  inLoanStatuses,
+  principalRatioOptions,
+  repaymentMethodOptions,
+  revokeInLoanAdjustment,
+  submitInLoanAdjustment,
+} from './inLoanAdjustment';
+export type { InLoanListParams } from '../types';
+
+export {
+  getConsumeSubsidy,
+  getConsumeSubsidies,
+  getLoanSubsidy,
+  getLoanSubsidies,
+  getSubsidyAgreement,
+  getSubsidyAgreements,
+  getSubsidyApproval,
+  getSubsidyApprovals,
+  getSubsidyFlow,
+  getSubsidyFlows,
+  getSubsidyRule,
+  getSubsidyRules,
+  getSystemApprovals,
+  loanSubsidies,
+  subsidyAgreements,
+  subsidyApprovalSources,
+  subsidyApprovalStatuses,
+  subsidyFlowStatuses,
+  subsidyFlowTypes,
+  subsidyInstitutions,
+  subsidyProducts,
+  subsidyRules,
+  subsidySigningModes,
+  subsidySystemStatuses,
+  subsidyRetryCards,
+  consumeSubsidies,
+  submitManualRecovery,
+  submitManualSubsidy,
+  terminateConsumeSubsidy,
+} from './subsidy';
+export type { ConsumeSubsidyAllocation, ConsumeSubsidyRecord, ConsumeSubsidyRefund, ConsumeSubsidyStatus, ConsumeSubsidyListParams, SubsidyRefundDetail } from '../types';
+export type {
+  AgreementStatus,
+  ApplicationListResponse,
+  ApplicationQuery,
+  ApplicationSource,
+  ApplicationStatus,
+  CancelApplicationResponse,
+  ConsumeInfo,
+  ConsumeInterestApplication,
+  ConsumeInterestClientConfig,
+  ConsumeInterestClientData,
+  ConsumeInterestClientResponse,
+  ConsumeInterestHomeState,
+  EligibleLoan,
+  Eligibility,
+  GetConsumeInterestClientDataResponse,
+  InterestAgreement,
+  InterestRecord,
+  InterestRecordListResponse,
+  InterestRecordQuery,
+  SubmitConsumeInterestPayload,
+  SubmitConsumeInterestResponse,
+  SubmitConsumeInterestResult,
+  Voucher,
+  VoucherType,
+} from '../types/consumeInterest';
+export {
+  cancelConsumeInterestApplication,
+  consumeApplications,
+  consumeInterestClientData,
+  eligibleLoans,
+  getConsumeInterestAgreement,
+  getConsumeInterestApplications,
+  getConsumeInterestClientData,
+  getConsumeInterestLoans,
+  getInterestRecords,
+  interestAgreements,
+  interestRecords,
+  signInterestAgreement,
+  submitConsumeInterestApplication,
+} from './consumeInterest';

@@ -1,8 +1,9 @@
-import { Alert, Button, Card, Drawer, Space, Tag, Typography, message } from 'antd';
+import { Alert, Button, Card, Drawer, Space, Tag, message } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import DataTable from '../../../components/DataTable';
 import Filter, { type FilterConfig, type FilterValue } from '../../../components/Filter';
+import OperationCell from '../../../components/OperationCell';
 import {
   getProducts,
   institutionOptions,
@@ -40,11 +41,7 @@ export const productColumns = (
   { title: '还款方式', key: 'repaymentMethods', width: 260, render: (_, record) => repaymentTags(record.repaymentMethods) },
   {
     title: '操作', key: 'actions', fixed: 'right', width: 220,
-    render: (_, record) => <Space size="small" wrap>
-      <Button type="link" size="small" onClick={() => onView(record)}>查看</Button>
-      <Button type="link" size="small" onClick={() => onEdit(record)}>编辑</Button>
-      <Button type="link" size="small" onClick={() => onMaintain(record)}>还款方式维护</Button>
-    </Space>,
+    render: (_, record) => <OperationCell items={[{ key: 'view', label: '查看' }, { key: 'edit', label: '编辑' }, { key: 'maintain', label: '还款方式维护' }]} onAction={(key) => key === 'view' ? onView(record) : key === 'edit' ? onEdit(record) : onMaintain(record)} />,
   },
 ];
 
@@ -101,7 +98,6 @@ export default function ProductList() {
 
   return (
     <div className="page-container">
-      <div className="page-heading"><div><Typography.Title level={3}>产品信息列表</Typography.Title><Typography.Paragraph type="secondary">维护产品基础信息及还款方式配置</Typography.Paragraph></div></div>
       <Card className="filter-card"><Filter configs={productFilters} onSearch={handleSearch} /></Card>
       {error && <Alert type="error" showIcon message={error} action={<Button size="small" onClick={reload}>重试</Button>} className="page-alert" />}
       <Card className="table-card"><DataTable columns={productColumns((product) => setModal({ mode: 'view', product }), (product) => setModal({ mode: 'edit', product }), (product) => setMaintenanceProduct(product))} dataSource={data} loading={loading} pagination={pagination} onPageChange={handlePageChange} /></Card>

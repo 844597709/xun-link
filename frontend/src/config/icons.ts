@@ -1,5 +1,5 @@
 import {
-  AppstoreOutlined, AuditOutlined, BankOutlined, CheckCircleOutlined, ClockCircleOutlined,
+  AppstoreOutlined, AuditOutlined, BankOutlined, CalendarOutlined, CheckCircleOutlined, ClockCircleOutlined,
   DollarOutlined, EditOutlined, FileDoneOutlined, FileProtectOutlined, FileSearchOutlined,
   FileTextOutlined, FolderOutlined, HomeOutlined, MenuFoldOutlined,
   MenuUnfoldOutlined, MoneyCollectOutlined, PayCircleOutlined, PlayCircleOutlined, RocketOutlined,
@@ -12,6 +12,7 @@ export const iconMap: Record<string, ComponentType> = {
   AppstoreOutlined,
   AuditOutlined,
   BankOutlined,
+  CalendarOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   DollarOutlined,
