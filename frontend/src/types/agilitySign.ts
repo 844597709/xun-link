@@ -22,6 +22,7 @@ export interface SignSchemeStage {
 export interface SignAdjustment {
   originalRepaymentMethod: string;
   newRepaymentMethod: string;
+  newRepaymentMethodCode?: 10 | 11 | 12;
   originalTotalPeriods: number;
   newTotalPeriods: number;
   originalRemainingPeriods: number;
@@ -32,8 +33,18 @@ export interface SignAdjustment {
   newPenaltyRate: string;
   originalCompoundRate: string;
   newCompoundRate: string;
+  compoundRateCharged?: boolean;
   interestRelief: string;
+  interestReliefAmount?: number;
   firstPaymentDelay: string;
+  firstPaymentDelayMonths?: number;
+}
+
+export interface SignRepaymentAccount {
+  id: string;
+  bankName: string;
+  cardNo: string;
+  displayName: string;
 }
 
 export interface AgilitySignData {
@@ -48,6 +59,9 @@ export interface AgilitySignData {
   adjustment: SignAdjustment;
   schemes: SignSchemeStage[];
   loanPeriod: string;
+  loanPurpose?: string;
+  repaymentAccount?: string;
+  repaymentAccounts?: SignRepaymentAccount[];
 }
 
 export type AgilitySignResponse = ApiResponse<AgilitySignData>;

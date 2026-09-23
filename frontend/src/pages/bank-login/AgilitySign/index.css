@@ -109,6 +109,71 @@
 .early-repay-button { display: block; width: 100%; margin: 18px 0 7px; padding: 11px; color: #1677ff; background: #f3f8ff; border: 1px solid #a8cbff; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; }
 .detail-adjust-link { display: block; width: 100%; padding: 6px; text-align: center; font-size: 12px; }
 
+.detail2-scroll { padding-top: 12px; }
+.adjustment-detail-2-card { margin-top: 10px; }
+.detail2-field-list { border-top: 1px solid #f0f2f6; }
+.detail2-field-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; border-bottom: 1px solid #f5f6f8; color: #76849a; font-size: 12px; }
+.detail2-field-row:last-child { border-bottom: 0; }
+.detail2-field-row > b { max-width: 68%; color: #1e3658; font-weight: 650; text-align: right; }
+.detail2-rate-values { display: inline-flex; align-items: center; gap: 7px; }
+.detail2-rate-values del { color: #a3adba; font-weight: 400; }
+.detail2-rate-values strong { color: #1677ff; font-weight: 700; }
+.detail2-accent-row > b { color: #e56b18; }
+.detail2-scheme-notice { margin-top: 10px; padding: 10px 11px; color: #9a5a14; background: #fff3df; border: 1px solid #ffd79b; border-radius: 9px; font-size: 11px; line-height: 1.55; }
+.detail2-scheme-notice > strong { display: block; margin-bottom: 6px; color: #d4670b; font-size: 12px; }
+.detail2-scheme-notice p { display: flex; gap: 6px; margin: 5px 0 0; }
+.detail2-scheme-notice p b { flex: 0 0 15px; display: inline-grid; width: 15px; height: 15px; place-items: center; color: #fff; background: #f29a3d; border-radius: 50%; font-size: 10px; }
+.detail2-field-action {
+  width: 100%;
+  padding: 0;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.detail2-field-action > b { display: inline-flex; align-items: center; gap: 3px; color: #1677ff; }
+.detail2-confirm-button { margin-top: 3px; }
+.account-sheet { max-height: min(56vh, 470px); }
+.account-list { padding: 0 2px; }
+.account-option { display: flex; align-items: center; width: 100%; padding: 12px 4px; color: #344a68; background: #fff; border: 1px solid transparent; border-bottom-color: #edf0f4; cursor: pointer; text-align: left; }
+.account-option:last-child { border-bottom-color: transparent; }
+.account-option.is-selected { color: #1677ff; background: #f3f8ff; border-color: #c8e0ff; border-radius: 9px; }
+.account-option-info { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.account-option-info strong { color: #243b5b; font-size: 13px; }
+.account-option-info small { color: #7d8b9e; font-size: 11px; }
+.account-option > .anticon { margin-left: auto; color: #a0acbb; }
+.account-option.is-selected > .anticon { color: #1677ff; font-size: 17px; }
+.choice-sheet { max-height: min(56vh, 470px); }
+.choice-list { padding: 0 2px; }
+.choice-option { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 13px 4px; color: #344a68; background: #fff; border: 1px solid transparent; border-bottom-color: #edf0f4; cursor: pointer; text-align: left; font-size: 13px; }
+.choice-option:last-child { border-bottom-color: transparent; }
+.choice-option.is-selected { color: #1677ff; background: #f3f8ff; border-color: #c8e0ff; border-radius: 9px; }
+.choice-option > .anticon { color: #a0acbb; }
+.choice-option.is-selected > .anticon { color: #1677ff; font-size: 17px; }
+
+.adjustment-detail-2-card .loan-number-row span,
+.adjustment-detail-2-card .loan-amount-highlight > span,
+.adjustment-detail-2-card .detail2-field-row > span {
+  color: #76849a;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: left;
+}
+.remaining-period-list { padding-bottom: 4px; }
+.remaining-period-group { border-bottom: 1px solid #edf0f4; }
+.remaining-period-group:last-child { border-bottom: 0; }
+.remaining-period-group .choice-option { border-bottom: 0; }
+.combination-choice-list { margin: 0 4px 10px; padding: 10px 9px; background: #eff7ff; border-radius: 10px; }
+.combination-choice-list h3 { margin: 0 0 9px; color: #273e5d; font-size: 14px; font-weight: 600; }
+.combination-choice { display: flex; align-items: flex-start; gap: 7px; width: 100%; margin-top: 8px; padding: 11px 9px; color: #283b55; background: #fff; border: 1px solid #edf0f4; border-radius: 9px; cursor: pointer; text-align: left; }
+.combination-choice:first-of-type { margin-top: 0; }
+.combination-choice.is-selected { border-color: #63c889; box-shadow: 0 0 0 1px rgba(70, 185, 111, .18); }
+.combination-choice-timeline { display: flex; flex: 1; flex-direction: column; gap: 6px; font-size: 12px; line-height: 1.5; }
+.combination-choice-timeline span { display: block; }
+.combination-choice > .anticon { flex: 0 0 auto; align-self: center; color: #40b96a; font-size: 18px; }
+
 .confirm-scroll { padding-top: 12px; }
 .confirm-tip { display: flex; align-items: flex-start; gap: 7px; padding: 10px 11px; color: #58708f; background: #edf6ff; border: 1px solid #d7eaff; border-radius: 10px; font-size: 12px; line-height: 1.5; }
 .confirm-tip .anticon { margin-top: 2px; color: #1677ff; }
@@ -120,6 +185,15 @@
 .loan-amount-highlight { display: flex; align-items: baseline; justify-content: space-between; padding: 13px 0 8px; }
 .loan-amount-highlight span { color: #60718b; font-size: 13px; }
 .loan-amount-highlight strong { color: #102c57; font-size: 21px; }
+.adjustment-detail-2-card .loan-number-row,
+.adjustment-detail-2-card .loan-number-row b,
+.adjustment-detail-2-card .loan-amount-highlight,
+.adjustment-detail-2-card .loan-amount-highlight span,
+.adjustment-detail-2-card .loan-amount-highlight strong,
+.adjustment-detail-2-card .detail2-field-row,
+.adjustment-detail-2-card .detail2-field-row > b {
+  font-size: 12px;
+}
 .loan-amount-highlight small, .new-plan-summary small, .sheet-plan-stats small { margin-left: 2px; color: inherit; font-size: 11px; font-weight: 500; }
 .compare-list { border-top: 1px solid #f0f2f6; }
 .compare-row { display: flex; align-items: center; justify-content: space-between; min-height: 38px; border-bottom: 1px solid #f5f6f8; font-size: 12px; }

@@ -1,6 +1,6 @@
 import type { ApiResponse } from './index';
 
-export type DebtSignStep = 'todo' | 'choose' | 'confirm' | 'processing';
+export type DebtSignStep = 'todo' | 'choose' | 'confirm' | 'confirm2' | 'processing';
 export type DebtSignTodoStatus = '未处理' | '已处理';
 export type DebtSignMode = 'single' | 'batch';
 
@@ -42,6 +42,18 @@ export interface DebtSignNewLoanPlan {
   term: string;
   purpose: string;
   account: string;
+  repaymentAccount: string;
+  receivingAccount: string;
+  repaymentStages: DebtSignRepaymentStage[];
+}
+
+export interface DebtSignRepaymentStage {
+  sequence: number;
+  startPeriod: number;
+  endPeriod: number;
+  repaymentMethod: string;
+  principalRatio: string;
+  description: string;
 }
 
 export interface DebtSignRepaymentItem {

@@ -19,11 +19,13 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { getAgilitySignData } from '../../../mock';
-import type { AgilitySignData, SignPlanStatus, SignRepaymentPlan } from '../../../types/agilitySign';
+import type { AgilitySignData, SignPlanStatus, SignRepaymentAccount, SignRepaymentPlan } from '../../../types/agilitySign';
 import './index.css';
 
 type Overlay = 'more' | 'plan' | 'contract' | 'password' | 'face' | null;
 type FaceStage = 'ready' | 'scanning' | 'verified';
+type Detail2Choice = { label: string; value: string; code?: 10 | 11 | 12 };
+type CombinationRepaymentChoice = { key: string; title: string; lines: string[] };
 
 const money = (value: number) => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -38,8 +40,8 @@ function MobileHeader({ title, onBack, onClose, onMore }: { title: string; onBac
   </header>;
 }
 
-function PhonePreview({ title, children, className = '', onBack, onClose, onMore }: { title: string; children: ReactNode; className?: string; onBack: () => void; onClose: () => void; onMore: () => void }) {
-  return <section className={`preview-phone ${className}`}>
+function PhonePreview({ panel, title, children, className = '', onBack, onClose, onMore }: { panel: string; title: string; children: ReactNode; className?: string; onBack: () => void; onClose: () => void; onMore: () => void }) {
+  return <section className={`preview-phone ${className}`} data-panel={panel}>
     <MobileHeader title={title} onBack={onBack} onClose={onClose} onMore={onMore} />
     {children}
   </section>;
@@ -182,6 +184,49 @@ function ConfirmPage({ data, onBack, onPlan, onContract, onConfirm }: { data: Ag
   </div>;
 }
 
+function AdjustmentDetailPage2({ data, onPlan, onAccount, onMethod, onRemaining, onPurpose, onContract, onConfirm, repaymentAccount, repaymentMethod, repaymentMethodCode, remainingPeriods, loanPurpose }: { data: AgilitySignData; onPlan: () => void; onAccount: () => void; onMethod: () => void; onRemaining: () => void; onPurpose: () => void; onContract: () => void; onConfirm: () => void; repaymentAccount: string; repaymentMethod: string; repaymentMethodCode?: 10 | 11 | 12; remainingPeriods: number; loanPurpose: string }) {
+  const [checked, setChecked] = useState(false);
+  const { adjustment: item } = data;
+  const combinedDescriptions: Record<10 | 11 | 12, string[]> = {
+    10: ['前12期只偿还利息', '第13-24期每月偿还30%本金的等额本息+另70%本金的利息', '第25-36期每月偿还剩余70%本金的等额本息'],
+    11: ['前12期只偿还利息', '第13-24期每月偿还30%本金的等额本息+另70%本金的利息', '第25-36期每月偿还剩余70%本金的等额本息'],
+    12: ['前12期只偿还利息', '第13-24期每月偿还30%本金的等额本息+另70%本金的利息', '第25-36期每月偿还剩余70%本金的等额本息'],
+  };
+  const schemeDescriptions = repaymentMethodCode ? combinedDescriptions[repaymentMethodCode] : undefined;
+  const schemeDescription = schemeDescriptions?.join('，');
+  const handleConfirm = () => {
+    if (!checked) { message.warning('请先勾选需要签署的协议'); return; }
+    onConfirm();
+  };
+  return <div className="sign-scroll confirm-scroll detail2-scroll">
+    <div className="confirm-tip"><SafetyCertificateOutlined /><span>请确认以下贷款调整信息，确认后将进入签约流程</span></div>
+    <SectionCard title="贷款调整详情" className="adjustment-detail-2-card">
+      <div className="loan-number-row"><span>贷款编号</span><b>{data.loanNo}</b><button type="button" aria-label="复制贷款编号" onClick={() => { void navigator.clipboard?.writeText(data.loanNo); message.success('贷款编号已复制'); }}><CopyOutlined /></button></div>
+      <div className="loan-amount-highlight"><span>贷款金额</span><strong>{money(data.loanAmount)}<small> 元</small></strong></div>
+      <div className="detail2-field-list">
+        <button className="detail2-field-row detail2-field-action" type="button" onClick={onMethod}><span>新还款方式</span><b>{repaymentMethod} <RightOutlined /></b></button>
+        <div className="detail2-field-row"><span>新总期数</span><b>{item.newTotalPeriods}期</b></div>
+        <button className="detail2-field-row detail2-field-action" type="button" onClick={onRemaining}><span>新剩余期数</span><b>{remainingPeriods}期 <RightOutlined /></b></button>
+        {schemeDescription ? <div className="detail2-scheme-notice"><p>{schemeDescription}。</p></div> : null}
+        <Detail2CompareRow label="正常利率" oldValue={item.originalNormalRate} newValue={item.newNormalRate} />
+        <Detail2CompareRow label="罚息利率" oldValue={item.originalPenaltyRate} newValue={item.newPenaltyRate} />
+        {item.compoundRateCharged !== false ? <Detail2CompareRow label="复息利率" oldValue={item.originalCompoundRate} newValue={item.newCompoundRate} /> : null}
+        {typeof item.interestReliefAmount === 'number' && item.interestReliefAmount < 0 ? <div className="detail2-field-row detail2-accent-row"><span>利息减免</span><b>{money(item.interestReliefAmount)} 元</b></div> : null}
+        {typeof item.firstPaymentDelayMonths === 'number' && item.firstPaymentDelayMonths > 0 ? <div className="detail2-field-row"><span>首期延迟</span><b>{item.firstPaymentDelayMonths}个月</b></div> : null}
+        <button className="detail2-field-row detail2-field-action" type="button" onClick={onPlan}><span>还款计划</span><b>查看 <RightOutlined /></b></button>
+        <button className="detail2-field-row detail2-field-action" type="button" onClick={onPurpose}><span>贷款用途</span><b>{loanPurpose} <RightOutlined /></b></button>
+        <button className="detail2-field-row detail2-field-action" type="button" onClick={onAccount}><span>还款账户</span><b>{repaymentAccount} <RightOutlined /></b></button>
+      </div>
+    </SectionCard>
+    <Agreement checked={checked} onChange={() => setChecked((value) => !value)} onContract={onContract} />
+    <button className="confirm-button detail2-confirm-button" type="button" onClick={handleConfirm}>确定</button>
+  </div>;
+}
+
+function Detail2CompareRow({ label, oldValue, newValue }: { label: string; oldValue: string; newValue: string }) {
+  return <div className="detail2-field-row"><span>{label}</span><b className="detail2-rate-values"><del>{oldValue}</del><strong>{newValue}</strong></b></div>;
+}
+
 function Sheet({ title, onClose, children, className = '' }: { title: string; onClose: () => void; children: ReactNode; className?: string }) {
   return <div className="sheet-mask" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
     <section className={`bottom-sheet ${className}`} role="dialog" aria-modal="true">
@@ -198,6 +243,59 @@ function PlanSheet({ data, onClose }: { data: AgilitySignData; onClose: () => vo
   return <Sheet title="新还款计划" onClose={onClose} className="plan-sheet">
     <div className="sheet-plan-stats"><div><span>还款总额</span><b>{money(total)}<small>元</small></b></div><div><span>利息总额</span><strong>{money(interest)} 元</strong></div><div><span>借款期间</span><strong>{data.loanPeriod}</strong></div></div>
     <div className="sheet-timeline">{data.adjustmentPlans.map((item) => <PlanItem item={item} key={item.period} />)}</div>
+  </Sheet>;
+}
+
+function AccountSheet({ accounts, selectedAccount, onSelect, onClose }: { accounts: SignRepaymentAccount[]; selectedAccount: string; onSelect: (account: string) => void; onClose: () => void }) {
+  return <Sheet title="选择还款账户" onClose={onClose} className="account-sheet">
+    <div className="account-list">
+      {accounts.length ? accounts.map((account) => {
+        const selected = account.displayName === selectedAccount;
+        return <button className={`account-option ${selected ? 'is-selected' : ''}`} type="button" aria-pressed={selected} key={account.id} onClick={() => onSelect(account.displayName)}>
+          <span className="account-option-info"><strong>{account.bankName}</strong><small>{account.cardNo}</small></span>
+          {selected ? <CheckCircleFilled /> : <RightOutlined />}
+        </button>;
+      }) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无可用还款账户" />}
+    </div>
+  </Sheet>;
+}
+
+function ChoiceSheet({ title, options, selected, onSelect, onClose }: { title: string; options: Detail2Choice[]; selected: string; onSelect: (option: Detail2Choice) => void; onClose: () => void }) {
+  return <Sheet title={title} onClose={onClose} className="choice-sheet">
+    <div className="choice-list">
+      {options.map((option) => {
+        const isSelected = option.value === selected;
+        return <button className={`choice-option ${isSelected ? 'is-selected' : ''}`} type="button" aria-pressed={isSelected} key={option.value} onClick={() => onSelect(option)}>
+          <strong>{option.label}</strong>
+          {isSelected ? <CheckCircleFilled /> : <RightOutlined />}
+        </button>;
+      })}
+    </div>
+  </Sheet>;
+}
+
+function RemainingPeriodSheet({ options, selected, combination, onSelect, onClose }: { options: Detail2Choice[]; selected: string; combination: boolean; onSelect: (option: Detail2Choice) => void; onClose: () => void }) {
+  const [selectedScheme, setSelectedScheme] = useState('split-36');
+  const schemes: CombinationRepaymentChoice[] = [
+    { key: 'lump-sum', title: '方案一', lines: ['【1-35期】：只偿还利息', '【36期】：一次性偿还所有本金'] },
+    { key: 'split-36', title: '方案二', lines: ['【1-12期】：只偿还利息', '【13-24期】：每月偿还30%本金的等额本金+另70%本金的利息（每月固定）', '【25-36期】：每月偿还剩余70%本金的等额本金'] },
+  ];
+  return <Sheet title="选择新剩余期数" onClose={onClose} className="choice-sheet remaining-period-sheet">
+    <div className="choice-list remaining-period-list">
+      {options.map((option) => <div className="remaining-period-group" key={option.value}>
+        <button className={`choice-option ${option.value === selected ? 'is-selected' : ''}`} type="button" aria-pressed={option.value === selected} onClick={() => onSelect(option)}>
+          <strong>{option.label}</strong>
+          {option.value === selected ? <CheckCircleFilled /> : <RightOutlined />}
+        </button>
+        {combination && option.value === selected ? <div className="combination-choice-list">
+          <h3>请选择组合还款方案</h3>
+          {schemes.map((scheme) => <button className={`combination-choice ${selectedScheme === scheme.key ? 'is-selected' : ''}`} type="button" aria-pressed={selectedScheme === scheme.key} key={scheme.key} onClick={() => setSelectedScheme(scheme.key)}>
+            <span className="combination-choice-timeline">{scheme.lines.map((line) => <span key={line}>{line}</span>)}</span>
+            {selectedScheme === scheme.key ? <CheckCircleFilled /> : null}
+          </button>)}
+        </div> : null}
+      </div>)}
+    </div>
   </Sheet>;
 }
 
@@ -251,10 +349,13 @@ export default function AgilitySignPage() {
   const [data, setData] = useState<AgilitySignData>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [overlay, setOverlay] = useState<Overlay>(null);
-  const [password, setPassword] = useState('');
-  const [faceStage, setFaceStage] = useState<FaceStage>('ready');
-  const [focusedPanel, setFocusedPanel] = useState<'detail' | 'adjustment' | 'result'>('detail');
+  const [focusedPanel, setFocusedPanel] = useState<'detail' | 'adjustment2' | 'result'>('detail');
+  const [detail2Overlay, setDetail2Overlay] = useState<'plan' | 'contract' | 'accounts' | 'method' | 'remaining' | 'purpose' | null>(null);
+  const [detail2Account, setDetail2Account] = useState<string>();
+  const [detail2Method, setDetail2Method] = useState<string>();
+  const [detail2MethodCode, setDetail2MethodCode] = useState<10 | 11 | 12 | null>(null);
+  const [detail2RemainingPeriods, setDetail2RemainingPeriods] = useState<number>();
+  const [detail2Purpose, setDetail2Purpose] = useState<string>();
 
   const loadData = () => {
     setError(false);
@@ -263,43 +364,45 @@ export default function AgilitySignPage() {
   };
 
   useEffect(() => { loadData(); }, []);
-  useEffect(() => {
-    if (faceStage !== 'scanning') return undefined;
-    const timer = window.setTimeout(() => setFaceStage('verified'), 1400);
-    return () => window.clearTimeout(timer);
-  }, [faceStage]);
-  useEffect(() => {
-    if (faceStage !== 'verified') return undefined;
-    const timer = window.setTimeout(() => { setOverlay(null); setFocusedPanel('result'); setFaceStage('ready'); }, 900);
-    return () => window.clearTimeout(timer);
-  }, [faceStage]);
 
   if (loading) return <div className="mobile-frame sign-loading"><Spin tip="正在加载签约信息..." /></div>;
   if (error || !data) return <div className="mobile-frame sign-loading"><Empty description="签约信息加载失败"><Button onClick={loadData}>重新加载</Button></Empty></div>;
 
   const close = () => navigate('/welcome');
-  const goDetail = () => { setFocusedPanel('detail'); if (overlay) setOverlay(null); };
-  const goAdjustment = () => { setFocusedPanel('adjustment'); api.info('已定位到中间的贷款调整画板'); };
+  const goDetail = () => { setFocusedPanel('detail'); };
+  const goAdjustment2 = () => { setFocusedPanel('adjustment2'); setDetail2Overlay(null); api.info('已定位到贷款调整确认画板'); };
   const goResult = () => { setFocusedPanel('result'); api.info('已定位到右侧的确认结果画板'); };
-  const openPassword = () => { setPassword(''); setFocusedPanel('adjustment'); setOverlay('password'); };
+  const currentDetail2Account = detail2Account ?? data.repaymentAccount ?? '工商银行';
+  const currentDetail2Method = detail2Method ?? data.adjustment.newRepaymentMethod;
+  const currentDetail2MethodCode = detail2Method === undefined ? data.adjustment.newRepaymentMethodCode : detail2MethodCode ?? undefined;
+  const currentDetail2RemainingPeriods = detail2RemainingPeriods ?? data.adjustment.newRemainingPeriods;
+  const currentDetail2Purpose = detail2Purpose ?? data.loanPurpose ?? '个人消费';
+  const detail2MethodOptions: Detail2Choice[] = [
+    { label: data.adjustment.newRepaymentMethod, value: data.adjustment.newRepaymentMethod, code: data.adjustment.newRepaymentMethodCode },
+    { label: '等额本息', value: '等额本息' },
+    { label: '等额本金', value: '等额本金' },
+  ];
+  const detail2RemainingOptions: Detail2Choice[] = [12, 24, 30, 36, 48].map((period) => ({ label: `${period}期，每期一个月`, value: String(period) }));
+  const detail2PurposeOptions: Detail2Choice[] = ['个人消费', '生产经营', '购房'].map((purpose) => ({ label: purpose, value: purpose }));
 
   return <div className="sign-host">
     {contextHolder}
     <div className="canvas-heading"><div><strong>灵动重组签约</strong><span>三步签约流程预览</span></div><span className="canvas-size">370 × 844</span></div>
     <div className="sign-canvas-scroll">
       <main className="sign-canvas">
-        <PhonePreview title="灵动重组签约" className={focusedPanel === 'detail' ? 'is-focused' : ''} onBack={() => navigate(-1)} onClose={close} onMore={() => setOverlay('more')}>
-          <DetailPage data={data} onAdjust={goAdjustment} onMore={() => api.info('借款凭证已上传')} />
+        <PhonePreview panel="detail" title="灵动重组签约" className={focusedPanel === 'detail' ? 'is-focused' : ''} onBack={() => navigate(-1)} onClose={close} onMore={() => api.info('更多办理说明')}>
+          <DetailPage data={data} onAdjust={goAdjustment2} onMore={() => api.info('借款凭证已上传')} />
         </PhonePreview>
-        <PhonePreview title="贷款调整" className={focusedPanel === 'adjustment' ? 'is-focused' : ''} onBack={goDetail} onClose={close} onMore={() => setOverlay('more')}>
-          <ConfirmPage data={data} onBack={goDetail} onPlan={() => setOverlay('plan')} onContract={() => setOverlay('contract')} onConfirm={openPassword} />
-          {overlay === 'more' ? <MoreSheet onClose={() => setOverlay(null)} onHelp={() => { setOverlay(null); api.info('请确认贷款调整详情后完成签约'); }} /> : null}
-          {overlay === 'plan' ? <PlanSheet data={data} onClose={() => setOverlay(null)} /> : null}
-          {overlay === 'contract' ? <ContractSheet onClose={() => setOverlay(null)} /> : null}
-          {overlay === 'password' ? <PasswordSheet value={password} onChange={setPassword} onSubmit={() => { setOverlay('face'); setFaceStage('ready'); }} onClose={() => setOverlay(null)} /> : null}
-          {overlay === 'face' ? <FaceSheet stage={faceStage} onStart={() => setFaceStage('scanning')} onClose={() => setOverlay(null)} /> : null}
+        <PhonePreview panel="adjustment-detail-2" title="贷款调整确认" className={focusedPanel === 'adjustment2' ? 'is-focused' : ''} onBack={goDetail} onClose={close} onMore={() => api.info('请核对贷款调整确认信息')}>
+          <AdjustmentDetailPage2 data={data} repaymentAccount={currentDetail2Account} repaymentMethod={currentDetail2Method} repaymentMethodCode={currentDetail2MethodCode} remainingPeriods={currentDetail2RemainingPeriods} loanPurpose={currentDetail2Purpose} onPlan={() => setDetail2Overlay('plan')} onAccount={() => setDetail2Overlay('accounts')} onMethod={() => setDetail2Overlay('method')} onRemaining={() => setDetail2Overlay('remaining')} onPurpose={() => setDetail2Overlay('purpose')} onContract={() => setDetail2Overlay('contract')} onConfirm={() => api.success('贷款调整确认已提交')} />
+          {detail2Overlay === 'plan' ? <PlanSheet data={data} onClose={() => setDetail2Overlay(null)} /> : null}
+          {detail2Overlay === 'contract' ? <ContractSheet onClose={() => setDetail2Overlay(null)} /> : null}
+          {detail2Overlay === 'accounts' ? <AccountSheet accounts={data.repaymentAccounts ?? []} selectedAccount={currentDetail2Account} onSelect={(account) => { setDetail2Account(account); setDetail2Overlay(null); }} onClose={() => setDetail2Overlay(null)} /> : null}
+          {detail2Overlay === 'method' ? <ChoiceSheet title="选择新还款方式" options={detail2MethodOptions} selected={currentDetail2Method} onSelect={(option) => { setDetail2Method(option.value); setDetail2MethodCode(option.code ?? null); setDetail2Overlay(null); }} onClose={() => setDetail2Overlay(null)} /> : null}
+          {detail2Overlay === 'remaining' ? <RemainingPeriodSheet options={detail2RemainingOptions} selected={String(currentDetail2RemainingPeriods)} combination={currentDetail2MethodCode !== undefined} onSelect={(option) => { setDetail2RemainingPeriods(Number(option.value)); setDetail2Overlay(null); }} onClose={() => setDetail2Overlay(null)} /> : null}
+          {detail2Overlay === 'purpose' ? <ChoiceSheet title="选择贷款用途" options={detail2PurposeOptions} selected={currentDetail2Purpose} onSelect={(option) => { setDetail2Purpose(option.value); setDetail2Overlay(null); }} onClose={() => setDetail2Overlay(null)} /> : null}
         </PhonePreview>
-        <PhonePreview title="贷款调整确认结果" className={focusedPanel === 'result' ? 'is-focused' : ''} onBack={goAdjustment} onClose={close} onMore={goResult}>
+        <PhonePreview panel="result" title="贷款调整确认结果" className={focusedPanel === 'result' ? 'is-focused' : ''} onBack={goAdjustment2} onClose={close} onMore={goResult}>
           <ProcessingPage onHome={() => navigate('/welcome')} />
         </PhonePreview>
       </main>

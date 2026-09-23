@@ -1,5 +1,5 @@
 import { delay } from '../utils';
-import type { AgilitySignResponse, AgilitySignData, SignRepaymentPlan } from '../types/agilitySign';
+import type { AgilitySignResponse, AgilitySignData, SignRepaymentAccount, SignRepaymentPlan } from '../types/agilitySign';
 
 const plans: SignRepaymentPlan[] = [
   { period: 7, date: '2026年09月20日', total: 9066.67, principal: 6500, interest: 2566.67, discount: 180, status: '未还' },
@@ -9,6 +9,12 @@ const plans: SignRepaymentPlan[] = [
   { period: 11, date: '2027年01月20日', total: 8720.93, principal: 6500, interest: 2220.93, status: '未还' },
   { period: 6, date: '2026年08月20日', total: 9153.10, principal: 6500, interest: 2653.10, status: '已还' },
   { period: 5, date: '2026年07月20日', total: 9239.54, principal: 6500, interest: 2739.54, status: '已还' },
+];
+
+const repaymentAccounts: SignRepaymentAccount[] = [
+  { id: 'icbc-2688', bankName: '工商银行', cardNo: '尾号 2688', displayName: '工商银行（尾号 2688）' },
+  { id: 'cmb-5276', bankName: '招商银行', cardNo: '尾号 5276', displayName: '招商银行（尾号 5276）' },
+  { id: 'ccb-1042', bankName: '建设银行', cardNo: '尾号 1042', displayName: '建设银行（尾号 1042）' },
 ];
 
 const signData: AgilitySignData = {
@@ -35,6 +41,7 @@ const signData: AgilitySignData = {
   adjustment: {
     originalRepaymentMethod: '等额本息',
     newRepaymentMethod: '先息后本·等额本金组合',
+    newRepaymentMethodCode: 11,
     originalTotalPeriods: 36,
     newTotalPeriods: 36,
     originalRemainingPeriods: 30,
@@ -45,8 +52,11 @@ const signData: AgilitySignData = {
     newPenaltyRate: '7.25%',
     originalCompoundRate: '12.00%',
     newCompoundRate: '10.00%',
+    compoundRateCharged: true,
     interestRelief: '2,800.00元',
+    interestReliefAmount: -2800,
     firstPaymentDelay: '1个月',
+    firstPaymentDelayMonths: 1,
   },
   schemes: [
     { period: '第1-18期', method: '先息后本', principalRatio: '本金30%', description: '前18期按月支付利息，期末归还约定比例本金，减轻近期还款压力。' },
@@ -54,6 +64,9 @@ const signData: AgilitySignData = {
     { period: '第31-36期', method: '等额本息', principalRatio: '本金100%', description: '最后阶段按等额本息方式结清剩余贷款本息。' },
   ],
   loanPeriod: '2024年03月20日 - 2027年03月20日',
+  loanPurpose: '个人消费',
+  repaymentAccount: '工商银行（尾号 2688）',
+  repaymentAccounts,
 };
 
 export async function getAgilitySignData(): Promise<AgilitySignResponse> {

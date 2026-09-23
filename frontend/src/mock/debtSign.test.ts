@@ -18,6 +18,16 @@ describe('债务重组签约 Mock 服务', () => {
     expect(data.repaymentPlan.every((item) => item.amount === item.principal + item.interest)).toBe(true);
   });
 
+  it('方案包含分阶段还款和独立账户字段', async () => {
+    const { data } = await getDebtSignData();
+    expect(data.plan.repaymentStages).toHaveLength(2);
+    expect(data.plan.repaymentStages[0]).toEqual(expect.objectContaining({ sequence: 1, startPeriod: 1, endPeriod: 18 }));
+    expect(data.plan.repaymentStages[1]).toEqual(expect.objectContaining({ sequence: 2, startPeriod: 19, endPeriod: 30 }));
+    expect(data.plan.repaymentAccount).toBeTruthy();
+    expect(data.plan.receivingAccount).toBeTruthy();
+    expect(data.plan.repaymentAccount).not.toBe(data.plan.receivingAccount);
+  });
+
   it('提交接口返回申请编号和处理中消息', async () => {
     const response = await submitDebtSign([1, 2]);
     expect(response.code).toBe(0);

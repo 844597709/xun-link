@@ -124,6 +124,51 @@ function PlanConfirmPage({ selected, plan, repaymentPlan, onPlan, onSubmit, onBa
   </div>;
 }
 
+function PlanConfirmPage2({ selected, plan, repaymentPlan, onPlan, onSubmit, onBack }: { selected: DebtSignLoanNote[]; plan: DebtSignData['plan']; repaymentPlan: DebtSignRepaymentItem[]; onPlan: () => void; onSubmit: () => void; onBack: () => void }) {
+  const principal = sum(selected, 'remainingPrincipal');
+  const interest = sum(selected, 'totalInterest');
+  const penalty = sum(selected, 'totalPenalty');
+  const discount = sum(selected, 'recoveryDiscount');
+  const total = principal + interest + penalty - discount;
+  const currentPlan = { ...plan, principal, term: `${repaymentPlan.length}期` };
+  return <div className="debt-sign-scroll confirm2-scroll">
+    <div className="confirm2-original-card">
+      <h2>原借据信息</h2>
+      <div className="confirm2-field-list">
+        <Confirm2Row label="应还本金" value={`${money(principal)} 元`} />
+        <Confirm2Row label="应还利息" value={`${money(interest)} 元`} />
+        <Confirm2Row label="违约金" value={`${money(penalty)} 元`} />
+        <Confirm2Row label="回收优惠" value={`-${money(discount)} 元`} className="confirm2-positive" />
+        <div className="confirm2-total-row"><span>应还总额</span><b>{money(total)} 元</b></div>
+      </div>
+    </div>
+    <SignCard title="新借据信息（方案确认）" className="confirm2-new-card">
+      <div className="confirm2-field-list">
+        <Confirm2Row label="借款本金" value={`${money(currentPlan.principal)} 元`} className="confirm2-principal-row" />
+        <Confirm2Row label="年化利率" value={currentPlan.annualRate} />
+        <Confirm2Row label="还款方式" value={currentPlan.repaymentMethod} />
+      </div>
+      <div className="confirm2-scheme">
+        <strong>还款方案</strong>
+        {currentPlan.repaymentStages.map((stage) => <div className="confirm2-stage" key={stage.sequence}><b>第{stage.sequence}阶段</b><span>第{stage.startPeriod}-{stage.endPeriod}期{stage.description ? `·${stage.description}` : ''}</span></div>)}
+      </div>
+      <div className="confirm2-field-list">
+        <Confirm2Row label="借款期限" value={currentPlan.term} />
+        <Confirm2Row label="借款用途" value={currentPlan.purpose} />
+        <button type="button" className="confirm2-field-row confirm2-field-action" onClick={onPlan}><span>还款计划</span><b>查看 <RightOutlined /></b></button>
+        <Confirm2Row label="还款账户" value={currentPlan.repaymentAccount} />
+        <Confirm2Row label="收款账户" value={currentPlan.receivingAccount} />
+      </div>
+    </SignCard>
+    <button type="button" className="debt-primary confirm2-submit" onClick={onSubmit}>确认提交</button>
+    <button type="button" className="debt-secondary" onClick={onBack}>返回修改</button>
+  </div>;
+}
+
+function Confirm2Row({ label, value, className = '' }: { label: string; value: string; className?: string }) {
+  return <div className={`confirm2-field-row ${className}`}><span>{label}</span><b>{value}</b></div>;
+}
+
 function Sheet({ title, onClose, children, className = '' }: { title: string; onClose: () => void; children: ReactNode; className?: string }) {
   return <div className="debt-sheet-mask" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className={`debt-bottom-sheet ${className}`} role="dialog" aria-modal="true"><div className="sheet-handle" /><div className="sheet-title"><h2>{title}</h2><button type="button" onClick={onClose} aria-label="关闭"><CloseOutlined /></button></div><div className="sheet-content">{children}</div></section></div>;
 }
@@ -153,7 +198,9 @@ export default function DebtSignPage() {
   const [selectedIds, setSelectedIds] = useState<number[]>([1]);
   const [agreed, setAgreed] = useState(false);
   const [sheet, setSheet] = useState<SheetType>(null);
+  const [confirm2Sheet, setConfirm2Sheet] = useState<SheetType>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [confirm2Submitting, setConfirm2Submitting] = useState(false);
 
   const load = () => { setLoading(true); setError(false); getDebtSignData().then((response) => setData(response.data)).catch(() => setError(true)).finally(() => setLoading(false)); };
   useEffect(() => { load(); }, []);
@@ -169,12 +216,26 @@ export default function DebtSignPage() {
 
   const close = () => navigate('/welcome');
   const focus = (panel: DebtSignStep) => setFocusedPanel(panel);
-  const start = (nextMode: 'single' | 'batch') => { setMode(nextMode); setSelectedIds(nextMode === 'batch' ? [1, 2] : [1]); setAgreed(false); setSheet(null); focus('choose'); };
-  const submit = async () => { if (submitting) return; setSubmitting(true); try { const response = await submitDebtSign(selectedIds); api.success(response.message); setSheet(null); focus('processing'); } catch { api.error('提交失败，请稍后重试'); } finally { setSubmitting(false); } };
+  const start = (nextMode: 'single' | 'batch') => { setMode(nextMode); setSelectedIds(nextMode === 'batch' ? [1, 2] : [1]); setAgreed(false); setSheet(null); setConfirm2Sheet(null); focus('choose'); };
+  const submit = async (source: 'confirm' | 'confirm2' = 'confirm') => {
+    const isConfirm2 = source === 'confirm2';
+    if (isConfirm2 ? confirm2Submitting : submitting) return;
+    if (isConfirm2) setConfirm2Submitting(true); else setSubmitting(true);
+    try {
+      const response = await submitDebtSign(selectedIds);
+      api.success(response.message);
+      if (isConfirm2) setConfirm2Sheet(null); else setSheet(null);
+      focus('processing');
+    } catch {
+      api.error('提交失败，请稍后重试');
+    } finally {
+      if (isConfirm2) setConfirm2Submitting(false); else setSubmitting(false);
+    }
+  };
 
   return <div className="debt-sign-host">
     {contextHolder}
-    <div className="debt-canvas-heading"><div><strong>债务重组签约</strong><span>四步签约流程预览</span></div><span className="canvas-size">370 × 844</span></div>
+    <div className="debt-canvas-heading"><div><strong>债务重组签约</strong><span>五个画板流程预览</span></div><span className="canvas-size">370 × 844</span></div>
     <div className="debt-sign-canvas-scroll">
       <main className="debt-sign-canvas">
         <DebtPhonePreview panel="todo" title="我的待办" className={focusedPanel === 'todo' ? 'is-focused' : ''} onBack={() => navigate(-1)} onClose={close}>
@@ -188,6 +249,12 @@ export default function DebtSignPage() {
           {sheet === 'plan' ? <PlanSheet items={repaymentPlan} onClose={() => setSheet(null)} /> : null}
           {sheet === 'notice' ? <NoticeSheet onClose={() => setSheet(null)} onSubmit={submit} /> : null}
           {submitting ? <div className="submit-loading"><Spin tip="正在提交..." /></div> : null}
+        </DebtPhonePreview>
+        <DebtPhonePreview panel="confirm2" title="借新还旧方案确认" className={focusedPanel === 'confirm2' ? 'is-focused' : ''} onBack={() => focus('choose')} onClose={close}>
+          <PlanConfirmPage2 selected={selected} plan={data.plan} repaymentPlan={repaymentPlan} onPlan={() => setConfirm2Sheet('plan')} onSubmit={() => setConfirm2Sheet('notice')} onBack={() => focus('choose')} />
+          {confirm2Sheet === 'plan' ? <PlanSheet items={repaymentPlan} onClose={() => setConfirm2Sheet(null)} /> : null}
+          {confirm2Sheet === 'notice' ? <NoticeSheet onClose={() => setConfirm2Sheet(null)} onSubmit={() => submit('confirm2')} /> : null}
+          {confirm2Submitting ? <div className="submit-loading"><Spin tip="正在提交..." /></div> : null}
         </DebtPhonePreview>
         <DebtPhonePreview panel="processing" title="处理结果" className={focusedPanel === 'processing' ? 'is-focused' : ''} onBack={() => focus('todo')} onClose={close}>
           <ProcessingPage onTodo={() => focus('todo')} />

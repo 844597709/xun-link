@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 export type { ApprovalDetailType, ApprovalListParams, ApprovalRecord, ApprovalStatus, ApprovalTimelineItem, AgileRestructuringDetail, DebtRestructuringDetail, ManualRepaymentDetail, ManualRepaymentSummary, ProductMaintenanceDetail } from './approval';
 
-export type { DebtSignData, DebtSignLoanNote, DebtSignNewLoanPlan, DebtSignRepaymentItem, DebtSignResponse, DebtSignStep, DebtSignTodo, DebtSignTodoStatus, DebtSignMode, DebtSignSubmitResponse } from './debtSign';
+export type { DebtSignData, DebtSignLoanNote, DebtSignNewLoanPlan, DebtSignRepaymentStage, DebtSignRepaymentItem, DebtSignResponse, DebtSignStep, DebtSignTodo, DebtSignTodoStatus, DebtSignMode, DebtSignSubmitResponse } from './debtSign';
 export type { CrossYearBusinessEntry, CrossYearPolicyYearState, CrossYearScheme, CrossYearSchemeId, CrossYearPolicyYear, CrossYearAgreementStatus } from './crossYearInterest';
 export type {
   ComboBankCard,
