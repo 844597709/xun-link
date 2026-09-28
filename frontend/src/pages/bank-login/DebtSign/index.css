@@ -12,7 +12,7 @@
 .loading-state { display: grid; place-items: center; padding: 24px; }
 .debt-sign-header { position: relative; z-index: 2; display: flex; align-items: center; flex: 0 0 44px; padding: 0 14px; background: rgba(255,255,255,.98); border-bottom: 1px solid #edf0f5; }
 .debt-sign-header > strong { position: absolute; left: 50%; transform: translateX(-50%); color: #1d3556; font-size: 16px; white-space: nowrap; }
-.debt-header-back, .debt-header-close { padding: 4px; color: #2f405c; background: none; border: 0; cursor: pointer; }
+.debt-header-back { padding: 4px; color: #2f405c; background: none; border: 0; cursor: pointer; }
 .debt-sign-scroll { flex: 1; padding: 24px 14px 28px; overflow-x: hidden; overflow-y: auto; scrollbar-width: none; }
 .debt-sign-scroll::-webkit-scrollbar, .sheet-content::-webkit-scrollbar { display: none; }
 .todo-tabs { display: grid; grid-template-columns: 1fr 1fr; height: 39px; margin: -2px 0 14px; border-bottom: 1px solid #e6ebf2; }
@@ -56,50 +56,40 @@
 .note-metrics .discount, .positive { color: #16a673 !important; }
 .period-pill { display: inline-block; margin: 11px 0 8px; padding: 4px 7px; color: #7d899a; background: #f3f5f8; border-radius: 4px; font-size: 10px; }
 .note-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
-.note-detail-grid div, .new-loan-grid div { display: flex; justify-content: space-between; gap: 4px; font-size: 11px; }
-.note-detail-grid span, .new-loan-grid span { color: #8995a5; }
-.note-detail-grid b, .new-loan-grid b { color: #354a68; font-weight: 600; text-align: right; }
+.note-detail-grid div { display: flex; justify-content: space-between; gap: 4px; font-size: 11px; }
+.note-detail-grid span { color: #8995a5; }
+.note-detail-grid b { color: #354a68; font-weight: 600; text-align: right; }
 .add-note-button { display: block; width: 100%; margin: 0 0 10px; padding: 8px; color: #1677ff; background: #f3f8ff; border: 1px dashed #a8cbff; border-radius: 8px; cursor: pointer; font-size: 12px; }
 .agreement-line { margin: 17px 4px 12px; color: #68778c; font-size: 11px; line-height: 1.7; }
 .agreement-line .ant-checkbox-label { color: #68778c; font-size: 11px; }
-.contract-link, .repayment-link { padding: 0; color: #1677ff; background: none; border: 0; cursor: pointer; }
+.contract-link { padding: 0; color: #1677ff; background: none; border: 0; cursor: pointer; }
 .contract-link { font-size: 11px; }
 .debt-primary { display: block; width: 100%; padding: 11px; color: #fff; background: #1677ff; border: 0; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 650; box-shadow: 0 7px 16px rgba(22,119,255,.2); }
 .debt-secondary { display: block; width: 100%; margin-top: 5px; padding: 8px; color: #7d899a; background: none; border: 0; cursor: pointer; font-size: 12px; }
-.confirm-scroll { padding-top: 14px; }
-.old-loan-summary { margin-bottom: 12px; padding: 15px 14px 10px; background: #f0f3f7; border-radius: 14px; }
-.summary-kicker { margin-bottom: 7px; color: #50627a; font-size: 13px; font-weight: 700; }
-.compare-row, .total-row { display: flex; align-items: center; justify-content: space-between; min-height: 34px; border-bottom: 1px solid rgba(205,213,224,.55); color: #7b899c; font-size: 11px; }
-.compare-row b { color: #334a69; font-weight: 600; }
-.total-row { margin-top: 5px; border-bottom: 0; color: #df4e4e; font-size: 13px; font-weight: 650; }
-.total-row b { color: #e04444; font-size: 18px; }
 .debt-card-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
 .debt-card-title h2 { margin: 0; color: #253b5b; font-size: 15px; }
-.new-loan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; }
-.new-loan-grid div:nth-child(3), .new-loan-grid div:nth-child(5), .new-loan-grid div:nth-child(6) { grid-column: span 2; }
-.repayment-link { display: flex; align-items: center; width: 100%; margin-top: 15px; padding-top: 12px; border-top: 1px solid #f0f2f6; text-align: left; font-size: 12px; }
-.repayment-link span { margin-left: auto; margin-right: 4px; color: #8995a5; font-size: 10px; }
 .confirm2-scroll { padding-top: 14px; }
 .confirm2-original-card { margin-bottom: 12px; padding: 17px 14px 11px; background: #fff; border: 1px solid #ebeff5; border-radius: 15px; box-shadow: 0 3px 12px rgba(27,55,92,.035); }
 .confirm2-original-card h2 { margin: 0 0 10px; color: #253b5b; font-size: 16px; }
-.confirm2-field-list { border-top: 1px solid #f0f2f6; }
-.confirm2-field-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; padding: 0; border-bottom: 1px solid #f5f6f8; color: #76849a; background: none; font-size: 12px; text-align: left; }
+.confirm2-field-list { display: flex; flex-direction: column; gap: 0; border-top: 0; }
+.confirm2-field-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 32px; padding: 0; border: 0; color: #76849a; background: none; font-size: 12px; line-height: 1.35; text-align: left; }
+.confirm2-field-row > span.confirm2-field-label, .confirm2-total-row > span.confirm2-field-label { font-size: 12px; }
 .confirm2-field-row:last-child { border-bottom: 0; }
-.confirm2-field-row > b { max-width: 70%; color: #1e3658; font-weight: 650; text-align: right; }
+.confirm2-field-row > b { max-width: 70%; color: #1e3658; font-size: 12px; font-weight: 650; text-align: right; }
 .confirm2-positive > b { color: #16a673; }
-.confirm2-total-row { display: flex; align-items: center; justify-content: space-between; min-height: 51px; color: #df4e4e; font-size: 13px; font-weight: 650; }
-.confirm2-total-row b { color: #e04444; font-size: 18px; }
+.confirm2-total-row { display: flex; align-items: center; justify-content: space-between; min-height: 32px; color: #df4e4e; font-size: 13px; font-weight: 650; }
+.confirm2-total-row b { color: #e04444; font-size: 12px; }
 .confirm2-new-card { margin-bottom: 12px; }
-.confirm2-principal-row > b { color: #102c57; font-size: 18px; }
-.confirm2-scheme { margin: 10px 0; padding: 11px 12px; color: #314867; background: #eff5ff; border-radius: 10px; }
-.confirm2-scheme > strong { display: block; margin-bottom: 5px; color: #102c57; font-size: 13px; }
-.confirm2-stage { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; min-height: 31px; font-size: 11px; }
-.confirm2-stage b { flex: 0 0 auto; color: #263d5c; }
-.confirm2-stage span { color: #4e6481; text-align: right; }
-.confirm2-field-action { width: 100%; cursor: pointer; }
-.confirm2-field-action > b { color: #1677ff; }
+.confirm2-principal-row > b { color: #102c57; font-size: 12px; }
+.confirm2-scheme { margin: 6px 0; padding: 8px 12px; color: #a45e18; background: #fff3df; border-radius: 10px; font-size: 11px; line-height: 1.55; }
+.confirm2-scheme p { margin: 0; }
+.confirm2-field-action { width: 100%; border: 0; cursor: pointer; font: inherit; }
+.confirm2-field-action > b { display: inline-flex; align-items: center; gap: 3px; color: #1677ff; }
 .confirm2-field-action .anticon { margin-left: 2px; font-size: 10px; }
+.confirm2-repayment-action { border: 0; }
 .confirm2-submit { margin-top: 2px; }
+.confirm2-detail-sheet { height: auto; max-height: 52%; min-height: 230px; }
+.confirm2-detail-copy { padding: 12px 4px; color: #425873; font-size: 13px; line-height: 1.9; }
 .debt-sheet-mask { position: absolute; inset: 0; z-index: 10; display: flex; align-items: flex-end; background: rgba(18,31,50,.45); }
 .debt-bottom-sheet { display: flex; flex-direction: column; width: 100%; height: 66%; min-height: 360px; padding: 7px 16px 16px; background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 28px rgba(14,31,56,.15); animation: debt-sheet-up .22s ease-out; }
 @keyframes debt-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }

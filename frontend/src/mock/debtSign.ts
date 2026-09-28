@@ -44,12 +44,17 @@ const data: DebtSignData = {
   plan: {
     principal: 260000,
     annualRate: '4.35%',
+    normalRate: '4.35%',
+    penaltyRate: '6.53%',
+    compoundRate: '6.53%',
+    firstPaymentDelayMonths: 2,
     repaymentMethod: '按月付息按计划还本',
-    term: '30个月',
+    term: '36期',
     purpose: '偿还原借据本金',
     account: '招商银行（尾号 2866）',
     repaymentAccount: '中国工商银行 8888',
     receivingAccount: '中国工商银行 ****8888',
+    interestReliefAmount: -360,
     repaymentStages: [
       { sequence: 1, startPeriod: 1, endPeriod: 18, repaymentMethod: '先息后本', principalRatio: '本金30%', description: '第1-18期先息后本，本金30%' },
       { sequence: 2, startPeriod: 19, endPeriod: 30, repaymentMethod: '等额本金', principalRatio: '本金70%', description: '第19-30期先息后本金70%' },

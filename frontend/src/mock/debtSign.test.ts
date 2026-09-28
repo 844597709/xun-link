@@ -25,6 +25,12 @@ describe('债务重组签约 Mock 服务', () => {
     expect(data.plan.repaymentStages[1]).toEqual(expect.objectContaining({ sequence: 2, startPeriod: 19, endPeriod: 30 }));
     expect(data.plan.repaymentAccount).toBeTruthy();
     expect(data.plan.receivingAccount).toBeTruthy();
+    expect(data.plan.normalRate).toBe('4.35%');
+    expect(data.plan.penaltyRate).toBe('6.53%');
+    expect(data.plan.compoundRate).toBe('6.53%');
+    expect(data.plan.firstPaymentDelayMonths).toBe(2);
+    expect(data.plan.interestReliefAmount).toBe(-360);
+    expect(data.plan.term).toBe('36期');
     expect(data.plan.repaymentAccount).not.toBe(data.plan.receivingAccount);
   });
 

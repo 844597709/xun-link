@@ -6,22 +6,21 @@ import { getDebtSignData, submitDebtSign } from '../../../mock';
 import type { DebtSignData, DebtSignLoanNote, DebtSignRepaymentItem, DebtSignStep, DebtSignTodoStatus } from '../../../types';
 import './index.css';
 
-type SheetType = 'plan' | 'notice' | null;
+type SheetType = 'plan' | 'notice' | 'method' | 'term' | 'purpose' | 'repaymentAccount' | 'receivingAccount' | null;
 
 const money = (value: number) => value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const sum = (items: DebtSignLoanNote[], key: keyof Pick<DebtSignLoanNote, 'remainingPrincipal' | 'totalInterest' | 'totalPenalty' | 'recoveryDiscount'>) => items.reduce((total, item) => total + Number(item[key]), 0);
 
-function MobileHeader({ title, onBack, onClose }: { title: string; onBack: () => void; onClose: () => void }) {
+function MobileHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return <header className="debt-sign-header">
     <button type="button" className="debt-header-back" onClick={onBack}><LeftOutlined /> 返回</button>
     <strong>{title}</strong>
-    <button type="button" className="debt-header-close" aria-label="关闭" onClick={onClose}><CloseOutlined /></button>
   </header>;
 }
 
-function DebtPhonePreview({ panel, title, children, className = '', onBack, onClose }: { panel: DebtSignStep; title: string; children: ReactNode; className?: string; onBack: () => void; onClose: () => void }) {
+function DebtPhonePreview({ panel, title, children, className = '', onBack }: { panel: DebtSignStep; title: string; children: ReactNode; className?: string; onBack: () => void }) {
   return <section className={`debt-preview-phone ${className}`} data-panel={panel}>
-    <MobileHeader title={title} onBack={onBack} onClose={onClose} />
+    <MobileHeader title={title} onBack={onBack} />
     {children}
   </section>;
 }
@@ -102,35 +101,18 @@ function ChoosePage({ data, mode, selectedIds, agreed, onChange, onAgreementChan
   </div>;
 }
 
-function CompareRow({ label, value, color = '' }: { label: string; value: string; color?: string }) {
-  return <div className="compare-row"><span>{label}</span><b className={color}>{value}</b></div>;
-}
-
-function PlanConfirmPage({ selected, plan, repaymentPlan, onPlan, onSubmit, onBack }: { selected: DebtSignLoanNote[]; plan: DebtSignData['plan']; repaymentPlan: DebtSignRepaymentItem[]; onPlan: () => void; onSubmit: () => void; onBack: () => void }) {
+function PlanConfirmPage2({ selected, plan, repaymentPlan, onPlan, onSubmit, onMethod, onTerm, onPurpose, onRepaymentAccount, onReceivingAccount }: { selected: DebtSignLoanNote[]; plan: DebtSignData['plan']; repaymentPlan: DebtSignRepaymentItem[]; onPlan: () => void; onSubmit: () => void; onMethod: () => void; onTerm: () => void; onPurpose: () => void; onRepaymentAccount: () => void; onReceivingAccount: () => void }) {
   const principal = sum(selected, 'remainingPrincipal');
   const interest = sum(selected, 'totalInterest');
   const penalty = sum(selected, 'totalPenalty');
   const discount = sum(selected, 'recoveryDiscount');
-  const total = principal + interest + penalty - discount;
-  const currentPlan = { ...plan, principal, term: `${repaymentPlan.length}个月` };
-  return <div className="debt-sign-scroll confirm-scroll">
-    <div className="old-loan-summary"><div className="summary-kicker">原借据信息</div><CompareRow label="应还本金" value={`${money(principal)} 元`} /><CompareRow label="应还利息" value={`${money(interest)} 元`} /><CompareRow label="违约金" value={`${money(penalty)} 元`} /><CompareRow label="回收优惠" value={`-${money(discount)} 元`} color="positive" /><div className="total-row"><span>应还总额</span><b>{money(total)} 元</b></div></div>
-    <SignCard title="新借据信息（方案确认）" className="new-loan-card">
-      <div className="new-loan-grid"><div><span>借款本金</span><b>{money(currentPlan.principal)} 元</b></div><div><span>年化利率</span><b>{currentPlan.annualRate}</b></div><div><span>还款方式</span><b>{currentPlan.repaymentMethod}</b></div><div><span>借款期限</span><b>{currentPlan.term}</b></div><div><span>借款用途</span><b>{currentPlan.purpose}</b></div><div><span>收款账户</span><b>{currentPlan.account}</b></div></div>
-      <button type="button" className="repayment-link" onClick={onPlan}>还款计划 <span>共 {repaymentPlan.length} 期</span><RightOutlined /></button>
-    </SignCard>
-    <button type="button" className="debt-primary" onClick={onSubmit}>确认提交</button>
-    <button type="button" className="debt-secondary" onClick={onBack}>返回修改</button>
-  </div>;
-}
-
-function PlanConfirmPage2({ selected, plan, repaymentPlan, onPlan, onSubmit, onBack }: { selected: DebtSignLoanNote[]; plan: DebtSignData['plan']; repaymentPlan: DebtSignRepaymentItem[]; onPlan: () => void; onSubmit: () => void; onBack: () => void }) {
-  const principal = sum(selected, 'remainingPrincipal');
-  const interest = sum(selected, 'totalInterest');
-  const penalty = sum(selected, 'totalPenalty');
-  const discount = sum(selected, 'recoveryDiscount');
-  const total = principal + interest + penalty - discount;
-  const currentPlan = { ...plan, principal, term: `${repaymentPlan.length}期` };
+  const interestRelief = plan.interestReliefAmount ?? 0;
+  const total = principal + interest + penalty - discount + (interestRelief < 0 ? interestRelief : 0);
+  const currentPlan = { ...plan, principal, term: '36期' };
+  const normalRate = currentPlan.normalRate ?? currentPlan.annualRate;
+  const penaltyRate = currentPlan.penaltyRate ?? normalRate;
+  const compoundRate = currentPlan.compoundRate ?? penaltyRate;
+  const schemeDescription = '前12期只偿还利息，第13-24期每月偿还30%本金的等额本息+另70%本金的利息，第25-36期每月偿还剩余70%本金的等额本息。';
   return <div className="debt-sign-scroll confirm2-scroll">
     <div className="confirm2-original-card">
       <h2>原借据信息</h2>
@@ -138,49 +120,58 @@ function PlanConfirmPage2({ selected, plan, repaymentPlan, onPlan, onSubmit, onB
         <Confirm2Row label="应还本金" value={`${money(principal)} 元`} />
         <Confirm2Row label="应还利息" value={`${money(interest)} 元`} />
         <Confirm2Row label="违约金" value={`${money(penalty)} 元`} />
-        <Confirm2Row label="回收优惠" value={`-${money(discount)} 元`} className="confirm2-positive" />
-        <div className="confirm2-total-row"><span>应还总额</span><b>{money(total)} 元</b></div>
+        <Confirm2Row label="回收优惠" value={`${money(discount)} 元`} className="confirm2-positive" />
+        {typeof currentPlan.interestReliefAmount === 'number' && currentPlan.interestReliefAmount < 0 ? <Confirm2Row label="利息减免" value={`${money(currentPlan.interestReliefAmount)} 元`} /> : null}
+        <div className="confirm2-total-row"><span className="confirm2-field-label">应还总额</span><b className="confirm2-total-value">{money(total)} 元</b></div>
       </div>
     </div>
-    <SignCard title="新借据信息（方案确认）" className="confirm2-new-card">
+    <div className="confirm2-original-card confirm2-new-card">
+      <h2>新借据信息</h2>
       <div className="confirm2-field-list">
         <Confirm2Row label="借款本金" value={`${money(currentPlan.principal)} 元`} className="confirm2-principal-row" />
-        <Confirm2Row label="年化利率" value={currentPlan.annualRate} />
-        <Confirm2Row label="还款方式" value={currentPlan.repaymentMethod} />
+        <Confirm2Row label="正常利率" value={normalRate} />
+        <Confirm2Row label="罚息利率" value={penaltyRate} />
+        <Confirm2Row label="复息利率" value={compoundRate} />
+        <Confirm2ActionRow label="还款方式" value={currentPlan.repaymentMethod} onClick={onMethod} />
+        <Confirm2ActionRow label="借款时长" value={currentPlan.term} onClick={onTerm} />
       </div>
-      <div className="confirm2-scheme">
-        <strong>还款方案</strong>
-        {currentPlan.repaymentStages.map((stage) => <div className="confirm2-stage" key={stage.sequence}><b>第{stage.sequence}阶段</b><span>第{stage.startPeriod}-{stage.endPeriod}期{stage.description ? `·${stage.description}` : ''}</span></div>)}
-      </div>
+      <div className="confirm2-scheme"><p>{schemeDescription}</p></div>
       <div className="confirm2-field-list">
-        <Confirm2Row label="借款期限" value={currentPlan.term} />
-        <Confirm2Row label="借款用途" value={currentPlan.purpose} />
-        <button type="button" className="confirm2-field-row confirm2-field-action" onClick={onPlan}><span>还款计划</span><b>查看 <RightOutlined /></b></button>
-        <Confirm2Row label="还款账户" value={currentPlan.repaymentAccount} />
-        <Confirm2Row label="收款账户" value={currentPlan.receivingAccount} />
+        {currentPlan.firstPaymentDelayMonths !== undefined && currentPlan.firstPaymentDelayMonths > 0 ? <Confirm2Row label="首期延迟" value={`${currentPlan.firstPaymentDelayMonths}个月`} /> : null}
+        <Confirm2ActionRow label="借款用途" value={currentPlan.purpose} onClick={onPurpose} />
+        <Confirm2ActionRow label="还款计划" value="查看" onClick={onPlan} className="confirm2-repayment-action" />
+        <Confirm2ActionRow label="还款账户" value={currentPlan.repaymentAccount} onClick={onRepaymentAccount} />
+        <Confirm2ActionRow label="收款账户" value={currentPlan.receivingAccount} onClick={onReceivingAccount} />
       </div>
-    </SignCard>
+    </div>
     <button type="button" className="debt-primary confirm2-submit" onClick={onSubmit}>确认提交</button>
-    <button type="button" className="debt-secondary" onClick={onBack}>返回修改</button>
   </div>;
 }
 
 function Confirm2Row({ label, value, className = '' }: { label: string; value: string; className?: string }) {
-  return <div className={`confirm2-field-row ${className}`}><span>{label}</span><b>{value}</b></div>;
+  return <div className={`confirm2-field-row ${className}`}><span className="confirm2-field-label">{label}</span><b>{value}</b></div>;
+}
+
+function Confirm2ActionRow({ label, value, onClick, className = '' }: { label: string; value: string; onClick: () => void; className?: string }) {
+  return <button type="button" className={`confirm2-field-row confirm2-field-action ${className}`} onClick={onClick}><span className="confirm2-field-label">{label}</span><b>{value} <RightOutlined /></b></button>;
 }
 
 function Sheet({ title, onClose, children, className = '' }: { title: string; onClose: () => void; children: ReactNode; className?: string }) {
   return <div className="debt-sheet-mask" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className={`debt-bottom-sheet ${className}`} role="dialog" aria-modal="true"><div className="sheet-handle" /><div className="sheet-title"><h2>{title}</h2><button type="button" onClick={onClose} aria-label="关闭"><CloseOutlined /></button></div><div className="sheet-content">{children}</div></section></div>;
 }
 
-function PlanSheet({ items, onClose }: { items: DebtSignRepaymentItem[]; onClose: () => void }) {
+function PlanSheet({ items, onClose, title = '还款计划' }: { items: DebtSignRepaymentItem[]; onClose: () => void; title?: string }) {
   const total = items.reduce((value, item) => value + item.amount, 0);
   const interest = items.reduce((value, item) => value + item.interest, 0);
-  return <Sheet title="还款计划" onClose={onClose} className="repayment-sheet"><div className="sheet-hero"><span>还款总额</span><strong>{money(total)}<small> 元</small></strong><p>利息总额 {money(interest)} 元 · 借款周期 {items.length} 个月</p></div><div className="repayment-list">{items.map((item) => <div className="repayment-item" key={item.period}><div><b>第{item.period}期</b><span>{item.dueDate}</span></div><strong>{money(item.amount)} 元</strong><p>本金 {money(item.principal)} 元　利息 {money(item.interest)} 元</p></div>)}</div></Sheet>;
+  return <Sheet title={title} onClose={onClose} className="repayment-sheet"><div className="sheet-hero"><span>还款总额</span><strong>{money(total)}<small> 元</small></strong><p>利息总额 {money(interest)} 元 · 借款周期 {items.length} 个月</p></div><div className="repayment-list">{items.map((item) => <div className="repayment-item" key={item.period}><div><b>第{item.period}期</b><span>{item.dueDate}</span></div><strong>{money(item.amount)} 元</strong><p>本金 {money(item.principal)} 元　利息 {money(item.interest)} 元</p></div>)}</div></Sheet>;
 }
 
 function NoticeSheet({ onClose, onSubmit }: { onClose: () => void; onSubmit: () => void }) {
   return <Sheet title="还款提示" onClose={onClose} className="notice-sheet"><div className="notice-sheet-icon"><WarningFilled /></div><p className="notice-copy">本次借新还旧需先行还清旧借据的利息、违约金等费用。还款成功后，旧借据本金将生成一笔新借据。请确保账户余额充足，以免影响申请进度。</p><div className="sheet-actions"><button type="button" className="sheet-cancel" onClick={onClose}>暂不提交</button><button type="button" className="sheet-submit" onClick={onSubmit}>我已知晓</button></div></Sheet>;
+}
+
+function DetailSheet({ title, value, onClose }: { title: string; value: string; onClose: () => void }) {
+  return <Sheet title={title} onClose={onClose} className="confirm2-detail-sheet"><div className="confirm2-detail-copy">{value}</div></Sheet>;
 }
 
 function ProcessingPage({ onTodo }: { onTodo: () => void }) {
@@ -197,10 +188,8 @@ export default function DebtSignPage() {
   const [mode, setMode] = useState<'single' | 'batch'>('single');
   const [selectedIds, setSelectedIds] = useState<number[]>([1]);
   const [agreed, setAgreed] = useState(false);
-  const [sheet, setSheet] = useState<SheetType>(null);
   const [confirm2Sheet, setConfirm2Sheet] = useState<SheetType>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [confirm2Submitting, setConfirm2Submitting] = useState(false);
 
   const load = () => { setLoading(true); setError(false); getDebtSignData().then((response) => setData(response.data)).catch(() => setError(true)).finally(() => setLoading(false)); };
   useEffect(() => { load(); }, []);
@@ -214,49 +203,46 @@ export default function DebtSignPage() {
   if (loading) return <div className="debt-mobile-frame loading-state"><Spin tip="正在加载签约信息..." /></div>;
   if (error || !data) return <div className="debt-mobile-frame loading-state"><Empty description="签约信息加载失败"><Button onClick={load}>重新加载</Button></Empty></div>;
 
-  const close = () => navigate('/welcome');
   const focus = (panel: DebtSignStep) => setFocusedPanel(panel);
-  const start = (nextMode: 'single' | 'batch') => { setMode(nextMode); setSelectedIds(nextMode === 'batch' ? [1, 2] : [1]); setAgreed(false); setSheet(null); setConfirm2Sheet(null); focus('choose'); };
-  const submit = async (source: 'confirm' | 'confirm2' = 'confirm') => {
-    const isConfirm2 = source === 'confirm2';
-    if (isConfirm2 ? confirm2Submitting : submitting) return;
-    if (isConfirm2) setConfirm2Submitting(true); else setSubmitting(true);
+  const start = (nextMode: 'single' | 'batch') => { setMode(nextMode); setSelectedIds(nextMode === 'batch' ? [1, 2] : [1]); setAgreed(false); setConfirm2Sheet(null); focus('choose'); };
+  const submit = async () => {
+    if (submitting) return;
+    setSubmitting(true);
     try {
       const response = await submitDebtSign(selectedIds);
       api.success(response.message);
-      if (isConfirm2) setConfirm2Sheet(null); else setSheet(null);
+      setConfirm2Sheet(null);
       focus('processing');
     } catch {
       api.error('提交失败，请稍后重试');
     } finally {
-      if (isConfirm2) setConfirm2Submitting(false); else setSubmitting(false);
+      setSubmitting(false);
     }
   };
 
   return <div className="debt-sign-host">
     {contextHolder}
-    <div className="debt-canvas-heading"><div><strong>债务重组签约</strong><span>五个画板流程预览</span></div><span className="canvas-size">370 × 844</span></div>
+    <div className="debt-canvas-heading"><div><strong>债务重组签约</strong><span>四个画板流程预览</span></div><span className="canvas-size">370 × 844</span></div>
     <div className="debt-sign-canvas-scroll">
       <main className="debt-sign-canvas">
-        <DebtPhonePreview panel="todo" title="我的待办" className={focusedPanel === 'todo' ? 'is-focused' : ''} onBack={() => navigate(-1)} onClose={close}>
+        <DebtPhonePreview panel="todo" title="我的待办" className={focusedPanel === 'todo' ? 'is-focused' : ''} onBack={() => navigate(-1)}>
           <TodoPage data={data} onStart={start} />
         </DebtPhonePreview>
-        <DebtPhonePreview panel="choose" title="借据选择" className={focusedPanel === 'choose' ? 'is-focused' : ''} onBack={() => focus('todo')} onClose={close}>
-          <ChoosePage data={data} mode={mode} selectedIds={selectedIds} agreed={agreed} onChange={setSelectedIds} onAgreementChange={() => setAgreed((value) => !value)} onNext={() => focus('confirm')} onBack={() => focus('todo')} />
+        <DebtPhonePreview panel="choose" title="借据选择" className={focusedPanel === 'choose' ? 'is-focused' : ''} onBack={() => focus('todo')}>
+          <ChoosePage data={data} mode={mode} selectedIds={selectedIds} agreed={agreed} onChange={setSelectedIds} onAgreementChange={() => setAgreed((value) => !value)} onNext={() => focus('confirm2')} onBack={() => focus('todo')} />
         </DebtPhonePreview>
-        <DebtPhonePreview panel="confirm" title="方案确认" className={focusedPanel === 'confirm' ? 'is-focused' : ''} onBack={() => focus('choose')} onClose={close}>
-          <PlanConfirmPage selected={selected} plan={data.plan} repaymentPlan={repaymentPlan} onPlan={() => setSheet('plan')} onSubmit={() => setSheet('notice')} onBack={() => focus('choose')} />
-          {sheet === 'plan' ? <PlanSheet items={repaymentPlan} onClose={() => setSheet(null)} /> : null}
-          {sheet === 'notice' ? <NoticeSheet onClose={() => setSheet(null)} onSubmit={submit} /> : null}
+        <DebtPhonePreview panel="confirm2" title="贷款确认" className={focusedPanel === 'confirm2' ? 'is-focused' : ''} onBack={() => focus('choose')}>
+          <PlanConfirmPage2 selected={selected} plan={data.plan} repaymentPlan={repaymentPlan} onPlan={() => setConfirm2Sheet('plan')} onSubmit={() => setConfirm2Sheet('notice')} onMethod={() => setConfirm2Sheet('method')} onTerm={() => setConfirm2Sheet('term')} onPurpose={() => setConfirm2Sheet('purpose')} onRepaymentAccount={() => setConfirm2Sheet('repaymentAccount')} onReceivingAccount={() => setConfirm2Sheet('receivingAccount')} />
+          {confirm2Sheet === 'plan' ? <PlanSheet items={repaymentPlan} title="新还款计划" onClose={() => setConfirm2Sheet(null)} /> : null}
+          {confirm2Sheet === 'notice' ? <NoticeSheet onClose={() => setConfirm2Sheet(null)} onSubmit={submit} /> : null}
+          {confirm2Sheet === 'method' ? <DetailSheet title="还款方式" value={`${data.plan.repaymentMethod}。${data.plan.repaymentStages.map((stage) => stage.description).join('；')}。`} onClose={() => setConfirm2Sheet(null)} /> : null}
+          {confirm2Sheet === 'term' ? <DetailSheet title="借款时长" value={`本方案借款时长为${data.plan.term || '36期'}。`} onClose={() => setConfirm2Sheet(null)} /> : null}
+          {confirm2Sheet === 'purpose' ? <DetailSheet title="借款用途" value={data.plan.purpose} onClose={() => setConfirm2Sheet(null)} /> : null}
+          {confirm2Sheet === 'repaymentAccount' ? <DetailSheet title="还款账户" value={`还款账户：${data.plan.repaymentAccount}`} onClose={() => setConfirm2Sheet(null)} /> : null}
+          {confirm2Sheet === 'receivingAccount' ? <DetailSheet title="收款账户" value={`收款账户：${data.plan.receivingAccount}`} onClose={() => setConfirm2Sheet(null)} /> : null}
           {submitting ? <div className="submit-loading"><Spin tip="正在提交..." /></div> : null}
         </DebtPhonePreview>
-        <DebtPhonePreview panel="confirm2" title="借新还旧方案确认" className={focusedPanel === 'confirm2' ? 'is-focused' : ''} onBack={() => focus('choose')} onClose={close}>
-          <PlanConfirmPage2 selected={selected} plan={data.plan} repaymentPlan={repaymentPlan} onPlan={() => setConfirm2Sheet('plan')} onSubmit={() => setConfirm2Sheet('notice')} onBack={() => focus('choose')} />
-          {confirm2Sheet === 'plan' ? <PlanSheet items={repaymentPlan} onClose={() => setConfirm2Sheet(null)} /> : null}
-          {confirm2Sheet === 'notice' ? <NoticeSheet onClose={() => setConfirm2Sheet(null)} onSubmit={() => submit('confirm2')} /> : null}
-          {confirm2Submitting ? <div className="submit-loading"><Spin tip="正在提交..." /></div> : null}
-        </DebtPhonePreview>
-        <DebtPhonePreview panel="processing" title="处理结果" className={focusedPanel === 'processing' ? 'is-focused' : ''} onBack={() => focus('todo')} onClose={close}>
+        <DebtPhonePreview panel="processing" title="处理结果" className={focusedPanel === 'processing' ? 'is-focused' : ''} onBack={() => focus('todo')}>
           <ProcessingPage onTodo={() => focus('todo')} />
         </DebtPhonePreview>
       </main>
