@@ -1,7 +1,7 @@
 import type { Dayjs } from 'dayjs';
 
 export type ApprovalStatus = '待审批' | '已通过' | '已驳回';
-export type ApprovalDetailType = 'product-maintenance' | 'manual-repayment' | 'debt-restructuring' | 'agile-restructuring';
+export type ApprovalDetailType = 'product-maintenance' | 'manual-repayment' | 'debt-restructuring' | 'agile-restructuring' | 'batch-deduction';
 
 export interface ApprovalTimelineItem {
   title: string;
@@ -80,9 +80,31 @@ export interface AgileRestructuringDetail {
   operatorName: string;
   originalState: Array<{ label: string; value: string }>;
   newState: Array<{ label: string; value: string }>;
+  scheme: { name: string; stages: Array<{ sequence: number; term: string; method: string; ratio: string }> };
   reason: string;
   attachments: string[];
   plans: Array<{ period: number; startDate: string; dueDate: string; status: string; initialTotal: number; initialPrincipal: number; initialInterest: number; remainingPrincipal: number; paidAmount: number; paidPrincipal: number }>;
+}
+
+export interface BatchDeductionDetail {
+  operatorType: '停止批扣' | '恢复批扣';
+  operatorId: string;
+  operatorName: string;
+  recovery?: {
+    strategy: string;
+    date: string;
+    days: number;
+  };
+  loans: Array<{
+    institutionCode: string;
+    institutionName: string;
+    customerNo: string;
+    customerName: string;
+    loanNo: string;
+    amount: number;
+    balance: number;
+    status: '正常' | '关闭';
+  }>;
 }
 
 export interface ApprovalRecord {
@@ -100,7 +122,7 @@ export interface ApprovalRecord {
   failureReason: string;
   detailType: ApprovalDetailType;
   timeline: ApprovalTimelineItem[];
-  detail: ProductMaintenanceDetail | ManualRepaymentDetail | DebtRestructuringDetail | AgileRestructuringDetail;
+  detail: ProductMaintenanceDetail | ManualRepaymentDetail | DebtRestructuringDetail | AgileRestructuringDetail | BatchDeductionDetail;
 }
 
 export interface ApprovalListParams {

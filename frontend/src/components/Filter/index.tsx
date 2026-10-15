@@ -14,6 +14,7 @@ export interface FilterConfig {
   showSearch?: boolean;
   multiple?: boolean;
   required?: boolean;
+  width?: number | string;
 }
 
 interface FilterProps {
@@ -30,13 +31,13 @@ export default function Filter({ configs, onSearch }: FilterProps) {
   const renderField = (config: FilterConfig) => {
     if (config.type === 'select') {
       const options = config.optionsResolver ? config.optionsResolver(filterValues) : config.options;
-      return <Select allowClear mode={config.multiple ? 'multiple' : undefined} showSearch={config.showSearch} optionFilterProp="label" options={options} placeholder={config.placeholder ?? `请选择${config.label}`} />;
+      return <Select allowClear mode={config.multiple ? 'multiple' : undefined} showSearch={config.showSearch} optionFilterProp="label" options={options} placeholder={config.placeholder ?? `请选择${config.label}`} style={{ width: config.width }} />;
     }
     if (config.type === 'datePicker') {
       const placeholder = config.placeholder ?? '请选择日期范围';
       return <DatePicker.RangePicker placeholder={[placeholder, placeholder]} style={{ width: '100%' }} />;
     }
-    return <Input allowClear placeholder={config.placeholder ?? `请输入${config.label}`} />;
+    return <Input allowClear placeholder={config.placeholder ?? `请输入${config.label}`} style={{ width: config.width }} />;
   };
 
   return (

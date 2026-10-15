@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type { ApprovalDetailType, ApprovalListParams, ApprovalRecord, ApprovalStatus, ApprovalTimelineItem, AgileRestructuringDetail, DebtRestructuringDetail, ManualRepaymentDetail, ManualRepaymentSummary, ProductMaintenanceDetail } from './approval';
+export type { ApprovalDetailType, ApprovalListParams, ApprovalRecord, ApprovalStatus, ApprovalTimelineItem, AgileRestructuringDetail, BatchDeductionDetail, DebtRestructuringDetail, ManualRepaymentDetail, ManualRepaymentSummary, ProductMaintenanceDetail } from './approval';
 
 export type { DebtSignData, DebtSignLoanNote, DebtSignNewLoanPlan, DebtSignRepaymentStage, DebtSignRepaymentItem, DebtSignResponse, DebtSignStep, DebtSignTodo, DebtSignTodoStatus, DebtSignMode, DebtSignSubmitResponse } from './debtSign';
 export type { CrossYearBusinessEntry, CrossYearPolicyYearState, CrossYearScheme, CrossYearSchemeId, CrossYearPolicyYear, CrossYearAgreementStatus } from './crossYearInterest';
@@ -25,6 +25,8 @@ export type {
   ComboTermOption,
   ComboRecordStatus,
 } from './comboRepaymentWithdrawal';
+
+export type { StopBatchDeductionFlag, StopBatchDeductionLoanStatus, StopBatchDeductionFiveLevelCategory, StopBatchDeductionProcessResult, StopBatchDeductionProcessStatus, StopBatchDeductionOperationType, StopBatchDeductionRecoveryStrategy, StopBatchDeductionRecoveryConfig, StopBatchDeductionSubmitParams, StopBatchDeductionExecutionRecord, StopBatchDeductionListParams, StopBatchDeductionHistoryRecord, StopBatchDeductionDetailParams, StopBatchDeductionSubmitItem, StopBatchDeductionSubmitResult, StopBatchDeductionRestoreParams, StopBatchDeductionRestoreResult } from './stopBatchDeduction';
 
 export interface ApiResponse<T> {
   code: number;
@@ -741,6 +743,7 @@ export interface SubsidyConsumptionDetail {
   approvedAmount: number;
   approvedAt: string;
   subsidyAmount: number;
+  expectedSubsidyTotalAmount: number;
   recoveryAmount: number;
   account?: string;
   accountType?: string;
@@ -817,6 +820,7 @@ export interface SubsidyVoucher {
   url: string;
   kind: '发票' | '消费凭证';
   invoiceNo?: string;
+  invoiceCode?: string;
   invoiceDate?: string;
   invoiceAmount?: number;
 }

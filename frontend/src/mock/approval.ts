@@ -1,6 +1,6 @@
 import type { ApiResponse, ListData } from '../types';
 import type {
-  AgileRestructuringDetail, ApprovalListParams, ApprovalRecord, ApprovalStatus, DebtRestructuringDetail,
+  AgileRestructuringDetail, ApprovalListParams, ApprovalRecord, ApprovalStatus, BatchDeductionDetail, DebtRestructuringDetail,
   ManualRepaymentDetail, ManualRepaymentSummary, ProductMaintenanceDetail,
 } from '../types/approval';
 import { delay } from '../utils';
@@ -18,7 +18,7 @@ const paginate = <T,>(list: T[], page: number, pageSize: number): ListData<T> =>
 const institutions = ['华北分行', '华东分行', '华南分行', '西南分行'];
 const products = ['个人消费贷', '个人经营贷', '小微企业贷', '灵活周转贷'];
 const types = ['产品维护', '营运管理', '贷后纾困', '贷后纾困'];
-const subtypes = ['还款方式维护审批', '手动还款审批', '债务重组-调整申请', '灵动重组-调整申请'];
+const subtypes = ['还款方式维护审批', '手动还款审批', '债务重组', '灵动重组'];
 const detailTypes = ['product-maintenance', 'manual-repayment', 'debt-restructuring', 'agile-restructuring'] as const;
 const statuses: ApprovalStatus[] = ['待审批', '已通过', '待审批', '已驳回'];
 
@@ -100,6 +100,21 @@ const debtDetail = (index: number): DebtRestructuringDetail => ({
   attachments: ['债务重组申请材料.zip', '客户情况说明.pdf'],
 });
 
+const batchDeductionDetail = (index: number, operatorType: BatchDeductionDetail['operatorType']): BatchDeductionDetail => ({
+  operatorType,
+  operatorId: `OP${String(index + 1001)}`,
+  operatorName: ['张晓宁', '李明远', '王芳'][index % 3],
+  recovery: operatorType === '停止批扣' ? {
+    strategy: '固定天数后恢复',
+    date: '2026-10-01',
+    days: 30,
+  } : undefined,
+  loans: [
+    { institutionCode: '2001', institutionName: '华北分行', customerNo: `CUS${String(index + 1).padStart(6, '0')}`, customerName: '张三', loanNo: `DK2026${String(index + 1).padStart(5, '0')}`, amount: 86000, balance: 42600, status: '正常' },
+    { institutionCode: '2002', institutionName: '华东分行', customerNo: `CUS${String(index + 2).padStart(6, '0')}`, customerName: '李四', loanNo: `DK2026${String(index + 101).padStart(5, '0')}`, amount: 52000, balance: 18000, status: '正常' },
+  ],
+});
+
 const agileDetail = (index: number): AgileRestructuringDetail => ({
   institutionCode: `20${String(index % 4 + 1).padStart(2, '0')}`,
   institutionName: institutions[index % institutions.length],
@@ -115,11 +130,16 @@ const agileDetail = (index: number): AgileRestructuringDetail => ({
     { label: '罚息利率', value: '7.125%' }, { label: '复息利率', value: '4.75%' },
   ],
   newState: [
-    { label: '还款方式', value: '先息后本' }, { label: '剩余期数', value: '36 期' },
-    { label: '利息减免', value: '是，减免 360 元' }, { label: '正常利率', value: '4.35%' },
-    { label: '罚息利率', value: '6.525%' }, { label: '复息利率', value: '4.35%' },
+    { label: '新还款方式', value: '按月付息按计划还本' }, { label: '新剩余期数', value: '36 期' },
+    { label: '新利息减免', value: '是，减免 360 元' }, { label: '新正常利率', value: '4.35%' },
+    { label: '新罚息利率', value: '6.525%' }, { label: '新复息利息', value: '4.35%' },
     { label: '失效日期', value: '2026-12-31' },
   ],
+  scheme: { name: '已有方案-方案A', stages: [
+    { sequence: 1, term: '1-12期', method: '按月付息按计划还本', ratio: '20%' },
+    { sequence: 2, term: '13-24期', method: '等额本金', ratio: '40%' },
+    { sequence: 3, term: '25-36期', method: '等额本金', ratio: '40%' },
+  ] },
   reason: '客户经营阶段性困难，申请调整还款安排并适当延长剩余期限。',
   attachments: ['灵动重组申请附件.pdf', '客户授权书.jpg'],
   plans: Array.from({ length: 18 }, (_, row) => ({
@@ -136,15 +156,17 @@ function createTimeline(index: number): ApprovalRecord['timeline'] {
 }
 
 export const approvalRecords: ApprovalRecord[] = Array.from({ length: 24 }, (_, index) => {
-  const detailType = detailTypes[index % detailTypes.length];
+  const isBatchDeduction = index === 5 || index === 6;
+  const batchOperatorType = index === 5 ? '停止批扣' : '恢复批扣';
+  const detailType = isBatchDeduction ? 'batch-deduction' : detailTypes[index % detailTypes.length];
   const status = statuses[index % statuses.length];
-  const detail = detailType === 'product-maintenance' ? productDetail(index) : detailType === 'manual-repayment' ? manualDetail(index) : detailType === 'debt-restructuring' ? debtDetail(index) : agileDetail(index);
+  const detail = detailType === 'product-maintenance' ? productDetail(index) : detailType === 'manual-repayment' ? manualDetail(index) : detailType === 'debt-restructuring' ? debtDetail(index) : detailType === 'agile-restructuring' ? agileDetail(index) : batchDeductionDetail(index, batchOperatorType);
   return {
     id: index + 1,
     institution: institutions[index % institutions.length],
     product: products[index % products.length],
-    type: types[index % types.length],
-    caseSubtype: subtypes[index % subtypes.length],
+    type: isBatchDeduction ? '内管审批' : types[index % types.length],
+    caseSubtype: isBatchDeduction ? '批扣操作' : subtypes[index % subtypes.length],
     initiator: ['张晓宁', '李明远', '王芳', '陈志强'][index % 4],
     applyTime: `2026-09-${String((index % 8) + 1).padStart(2, '0')} ${String(9 + index % 8).padStart(2, '0')}:12:08`,
     approver: status === '待审批' ? '--' : ['审核中心-赵敏', '审核中心-周宁'][index % 2],

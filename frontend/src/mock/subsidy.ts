@@ -97,7 +97,7 @@ function consumption(index: number, parentIndex: number): SubsidyConsumptionDeta
     consumptionDate: dateFor(index + parentIndex, 1), consumptionAmount: 800 + index * 360 + parentIndex * 25,
     appliedAmount: 700 + index * 300, purpose: ['日常消费', '教育培训', '医疗健康'][index % 3], merchantName: ['华联超市', '优选商城', '城市服务'][index % 3],
     approvalSource: index % 2 === 0 ? '系统核定' : '自主申请', approvedAmount: 650 + index * 270, approvedAt: dateFor(index + parentIndex, 2),
-    subsidyAmount: 30 + index * 8, recoveryAmount: index % 3 === 0 ? 0 : 6 + index, account: `6222 **** ${1000 + parentIndex}`,
+    subsidyAmount: 30 + index * 8, expectedSubsidyTotalAmount: 38 + index * 9, recoveryAmount: index % 3 === 0 ? 0 : 6 + index, account: `6222 **** ${1000 + parentIndex}`,
     accountType: '借记卡', loanNo: `LN2026${String(parentIndex + 1).padStart(5, '0')}`, availablePrincipal: 50000 - index * 1000,
     description: '符合规则的消费交易', approvalStatus: index % 3 === 0 ? '未核定' : '通过',
   };
@@ -156,7 +156,7 @@ export const systemApprovals: SystemApproval[] = Array.from({ length: 30 }, (_, 
 });
 
 const vouchersFor = (index: number): SubsidyVoucher[] => [
-  { id: `invoice-${index}`, name: `发票${index}.png`, url: `https://placehold.co/160x110/e8f3ff/1677ff?text=Invoice+${index}`, kind: '发票', invoiceNo: `INV-${index}`, invoiceDate: dateFor(index), invoiceAmount: 1200 + index * 100 },
+  { id: `invoice-${index}`, name: `发票${index}.png`, url: `https://placehold.co/160x110/e8f3ff/1677ff?text=Invoice+${index}`, kind: '发票', invoiceNo: `INV-${index}`, invoiceCode: `CODE-${String(20260000 + index)}`, invoiceDate: dateFor(index), invoiceAmount: 1200 + index * 100 },
   { id: `receipt-${index}`, name: `消费凭证${index}.png`, url: `https://placehold.co/160x110/f0fdf4/16a34a?text=Receipt+${index}`, kind: '消费凭证' },
 ];
 export const subsidyApprovals: SubsidyApproval[] = Array.from({ length: 24 }, (_, index) => {
@@ -209,9 +209,9 @@ export const consumeSubsidies: ConsumeSubsidyRecord[] = Array.from({ length: 24 
 });
 
 const loanTabs = (index: number): Record<string, Array<Record<string, string | number>>> => ({
-  '关联消费明细': [{ crosConsumptionNo: `CROS-C-${index}`, bankConsumptionNo: `BANK-C-${index}`, invoiceNo: `INV-${index}`, consumptionDate: dateFor(index), consumptionAmount: 1200 + index * 40, appliedAmount: 1100 + index * 30, purpose: '日常消费', merchantName: '华联超市', approvedAt: dateFor(index, 1), approvedAmount: 1050 + index * 30, expectedSubsidyAmount: 60 + index, actualSubsidyAmount: 50 + index, status: '正常' }],
+  '关联消费明细': [{ crosConsumptionNo: `CROS-C-${index}`, bankConsumptionNo: `BANK-C-${index}`, invoiceNo: `INV-${index}`, consumptionDate: dateFor(index), consumptionAmount: 1200 + index * 40, appliedAmount: 1100 + index * 30, purpose: '日常消费', merchantName: '华联超市', approvedAt: dateFor(index, 1), approvedAmount: 1050 + index * 30, expectedSubsidyAmount: 60 + index, actualSubsidyAmount: 50 + index, dueRecoveryAmount: index % 2 === 0 ? 8 + index : 0, status: '正常' }],
   '历史期供贴息明细': [{ period: 1, startDate: dateFor(index), dueDate: dateFor(index, 1), repaidAt: dateFor(index, 1), totalAmount: 2800 + index * 20, principal: 2400 + index * 15, interest: 400 + index * 5, customerInterest: 360 + index * 5, dueSubsidyAmount: 42 + index, actualSubsidyAmount: 40 + index, status: '正常' }],
-  '未来期供贴息计划': [{ period: 2, startDate: dateFor(index, 2), dueDate: dateFor(index, 3), dueTotal: 2850 + index * 20, duePrincipal: 2450 + index * 15, dueInterest: 400 + index * 5, discountAmount: 0, expectedSubsidyAmount: 45 + index, status: '正常' }],
+  '未还期供贴息计划': [{ period: 2, startDate: dateFor(index, 2), dueDate: dateFor(index, 3), dueTotal: 2850 + index * 20, duePrincipal: 2450 + index * 15, dueInterest: 400 + index * 5, discountAmount: 0, expectedSubsidyAmount: 45 + index, status: '正常' }],
   '贴息流水明细': [{ crosTransactionNo: `FLOW-${index}`, type: '实时贴息', expectedSubsidyAmount: 45 + index, actualSubsidyAmount: 45 + index, subsidyCardNo: '-', expectedRecoveryAmount: 0, actualRecoveryAmount: 0, recoveryCardNo: '-', subsidyAt: `${dateFor(index)} 10:20:00`, status: '成功' }],
   '还款流水明细': [{ crosRepaymentNo: `REPAY-${index}`, repaymentDate: dateFor(index, 3), repaymentTime: '09:30:00', repaymentType: '正常还款', source: '批扣还款', loanStatus: '正常', totalAmount: 2800 + index * 20, principal: 2400 + index * 15, interest: 400 + index * 5, account: `6222 **** ${4000 + index}`, dueSubsidyAmount: 42 + index, actualSubsidyAmount: 40 + index, status: '成功', remark: '正常扣款' }],
 });

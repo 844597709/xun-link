@@ -36,9 +36,13 @@ describe('贴息详情抽屉', () => {
     render(<MemoryRouter initialEntries={[`/operation/loan-interest/${loanSubsidies[0]!.id}`]}><LoanInterestDetail /></MemoryRouter>);
     await screen.findByText('贷款基础信息');
     fireEvent.click(screen.getByRole('tab', { name: '贴息流水明细' }));
-    expect(await screen.findByText('贴息流水汇总')).toBeInTheDocument();
-    expect(screen.getAllByText('预计贴息金额').length).toBeGreaterThan(0);
-    expect(screen.getByText('实收回贴息金额', { selector: 'span' })).toBeInTheDocument();
+    expect(await screen.findByText('实时贴息总笔数/成功笔数')).toBeInTheDocument();
+    expect(screen.getAllByText('补贴息总笔数/成功笔数').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('收回贴息总笔数/成功笔数').length).toBeGreaterThan(0);
+    expect(screen.getByText('1/1笔')).toBeInTheDocument();
+    expect(screen.queryByText('贴息流水汇总')).not.toBeInTheDocument();
+    expect(screen.queryByText(/共 \d+ 笔流水/)).not.toBeInTheDocument();
+    expect(screen.queryByText('实收回贴息金额')).not.toBeInTheDocument();
     expect(document.querySelector('.loan-interest-flow-summary')).toBeInTheDocument();
   });
 });

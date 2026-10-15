@@ -37,6 +37,9 @@ export const menuItems: MenuItem[] = [
   { id: 27, mpid: '22', name: '贴息核定', route: '/operation/interest-verify', icon: 'VerifiedOutlined' },
   { id: 28, mpid: '22', name: '贷款贴息', route: '/operation/loan-interest', icon: 'DollarOutlined' },
   { id: 29, mpid: '22', name: '消费贴息', route: '/operation/consume-interest', icon: 'ShoppingOutlined' },
+  { id: 38, mpid: '18', name: '批扣操作', icon: 'ClockCircleOutlined' },
+  { id: 39, mpid: '38', name: '批扣操作执行', route: '/operation/stop-batch-deduction/execution', icon: 'PlayCircleOutlined' },
+  { id: 40, mpid: '38', name: '批扣操作明细', route: '/operation/stop-batch-deduction/detail', icon: 'FileDoneOutlined' },
 
   // 审批管理
   { id: 30, mpid: '-1', name: '审批管理', icon: 'AuditOutlined' },

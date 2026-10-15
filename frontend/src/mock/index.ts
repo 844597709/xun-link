@@ -308,3 +308,32 @@ export {
   signInterestAgreement,
   submitConsumeInterestApplication,
 } from './consumeInterest';
+export {
+  getStopBatchDeductionExecutions,
+  getStopBatchDeductionDetails,
+  restoreBatchDeduction,
+  resetStopBatchDeductionMock,
+  stopBatchDeduction,
+  stopBatchDeductionExecutions,
+  stopBatchDeductionFiveLevelCategories,
+  stopBatchDeductionFlags,
+  stopBatchDeductionInstitutions,
+  stopBatchDeductionLoanStatuses,
+  stopBatchDeductionProcessResults,
+  stopBatchDeductionProcessStatuses,
+  stopBatchDeductionOperationTypes,
+  stopBatchDeductionProducts,
+  stopBatchDeductionRecoveryStrategies,
+  stopBatchDeductionHistories,
+} from './stopBatchDeduction';
+export type {
+  StopBatchDeductionDetailParams,
+  StopBatchDeductionExecutionRecord,
+  StopBatchDeductionHistoryRecord,
+  StopBatchDeductionListParams,
+  StopBatchDeductionOperationType,
+  StopBatchDeductionProcessStatus,
+  StopBatchDeductionSubmitResult,
+  StopBatchDeductionRestoreParams,
+  StopBatchDeductionRestoreResult,
+} from '../types/stopBatchDeduction';

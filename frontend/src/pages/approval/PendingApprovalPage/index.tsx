@@ -9,8 +9,8 @@ import { claimApproval, getApprovalRecords } from '../../../mock/approval';
 import type { ApprovalListParams, ApprovalRecord, ApprovalStatus } from '../../../types';
 
 const filterConfigs = [
-  { key: 'type', label: '类型', type: 'select' as const, options: [{ label: '产品维护', value: '产品维护' }, { label: '营运管理', value: '营运管理' }, { label: '贷后纾困', value: '贷后纾困' }] },
-  { key: 'caseSubtype', label: '案件子类型', type: 'select' as const, options: [{ label: '还款方式维护审批', value: '还款方式维护审批' }, { label: '手动还款审批', value: '手动还款审批' }, { label: '债务重组-调整申请', value: '债务重组-调整申请' }, { label: '灵动重组-调整申请', value: '灵动重组-调整申请' }] },
+  { key: 'type', label: '类型', type: 'select' as const, options: [{ label: '产品维护', value: '产品维护' }, { label: '营运管理', value: '营运管理' }, { label: '贷后纾困', value: '贷后纾困' }, { label: '内管审批', value: '内管审批' }] },
+  { key: 'caseSubtype', label: '案件子类型', type: 'select' as const, options: [{ label: '还款方式维护审批', value: '还款方式维护审批' }, { label: '手动还款审批', value: '手动还款审批' }, { label: '债务重组', value: '债务重组' }, { label: '灵动重组', value: '灵动重组' }, { label: '批扣操作', value: '批扣操作' }] },
   { key: 'initiator', label: '发起人', type: 'input' as const, placeholder: '请输入发起人' },
   { key: 'applyTime', label: '发起时间', type: 'datePicker' as const },
   { key: 'approvalStatus', label: '审批状态', type: 'select' as const, options: [{ label: '待审批', value: '待审批' }, { label: '已通过', value: '已通过' }, { label: '已驳回', value: '已驳回' }] },

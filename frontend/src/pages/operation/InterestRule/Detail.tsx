@@ -1,4 +1,4 @@
-import { Divider } from 'antd';
+import { Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getSubsidyRule, subsidyProducts } from '../../../mock';
@@ -32,12 +32,14 @@ export default function InterestRuleDetail({ recordId, embedded = false }: Inter
     setError('');
     void getSubsidyRule(id).then((response) => setRecord(response.data)).catch(() => setError('规则详情加载失败')).finally(() => setLoading(false));
   }, [id]);
-  if (!record) return <DetailShell title="贴息规则详情" loading={loading} error={error} embedded={embedded}>{null}</DetailShell>;
+  const title = record ? `贴息规则配置：${record.crosRuleNo}` : '贴息规则配置';
+  if (!record) return <DetailShell title={title} loading={loading} error={error} embedded={embedded}>{null}</DetailShell>;
   const products = subsidyProducts.filter((item) => record.products.includes(item.productName) && item.institutionName === record.institutionName).map((item) => item.productCode);
+  const productTags = products.length > 0 ? products.map((product) => <Tag key={product} color="blue">{product}</Tag>) : <span>-</span>;
   const basic = objectItems({
     机构号: record.institutionCode, 机构名称: record.institutionName, CROS规则编号: record.crosRuleNo, 银行规则编号: record.bankRuleNo,
-    规则描述: record.description, 规则状态: record.status, 贴息年利率: `${record.annualRate.toFixed(2)}%`, 起始日期: record.startDate, 结束日期: record.endDate,
-    支持产品列表: products.join('、') || record.products.join('、'), 协议签署模式: signingModeText[record.signingMode], 核定方案: approvalSchemeText[record.approvalScheme],
+    规则描述: record.description, 贴息年利率: `${record.annualRate.toFixed(2)}%`, 起始日期: record.startDate, 结束日期: record.endDate,
+    支持产品列表: productTags, 协议签署模式: signingModeText[record.signingMode], 核定方案: approvalSchemeText[record.approvalScheme],
     贴息账户范围: record.accountScope, 贴息期供范围: record.supplyScope, 实时贴息模式: record.realtimeMode, 补贴息模式: record.subsidyMode,
     收回贴息模式: record.recoveryMode, 是否查询银行消费流水: record.queryBankConsumption,
   });
@@ -50,9 +52,15 @@ export default function InterestRuleDetail({ recordId, embedded = false }: Inter
     逾期贴息失效规则: record.overdueFailureRule, 最低可贴息消费金额: `¥${record.minConsumptionAmount.toFixed(2)}`,
   });
   const coloredBasic = basic.map((item) => item.label === '规则状态' ? { ...item, value: statusTag(record.status) } : item);
-  return <DetailShell title="贴息规则详情" loading={loading} error={error} embedded={embedded}>
-    <DetailSection title="基础规则信息" items={coloredBasic} />
-    <Divider />
-    <DetailSection title="计贴息规则参数" items={rules} />
+  const items = [...coloredBasic, ...rules];
+  return <DetailShell title={title} loading={loading} error={error} embedded={embedded}>
+    <div className="subsidy-rule-summary">
+      <div className="subsidy-rule-number">规则编号：<strong>{record.crosRuleNo}</strong></div>
+      <div className="subsidy-rule-meta">
+        <span className={`subsidy-rule-status subsidy-rule-status-${record.status === '生效' ? 'active' : 'inactive'}`}>生效状态：{record.status}</span>
+        <span className="subsidy-rule-validity">有效期：{record.startDate} 至 {record.endDate}</span>
+      </div>
+    </div>
+    <DetailSection title="规则信息" items={items} layout="plain-two-column" />
   </DetailShell>;
 }

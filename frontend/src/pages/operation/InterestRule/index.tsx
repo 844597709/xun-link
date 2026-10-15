@@ -20,5 +20,5 @@ const columns = (handlers: SubsidyActionHandlers<SubsidyRule>): TableColumnsType
   { title: '操作', key: 'actions', fixed: 'right', width: 100, render: (_, record) => <OperationCell items={[{ key: 'view', label: '查看详情' }]} onAction={() => handlers.openAction('view', record)} /> },
 ];
 export default function InterestRule() {
-  return <SubsidyListPage<SubsidyRule> title="贴息规则配置" description="维护机构消费贷款贴息规则及计贴息参数" filters={[institutionFilter, productFilter, selectFilter('status', '规则状态', ['生效', '失效']), selectFilter('signingChannel', '协议签署模式', ['CROS签署', '银行APP签署', '自动签署']), selectFilter('approvalScheme', '核定方案', ['系统核定', '自主申请'])]} columns={columns} fetcher={fetchRules} detailTitle="贴息规则详情" detailRenderer={(record) => <InterestRuleDetail recordId={record.id} embedded />} />;
+  return <SubsidyListPage<SubsidyRule> title="贴息规则配置" description="维护机构消费贷款贴息规则及计贴息参数" filters={[institutionFilter, productFilter, selectFilter('status', '规则状态', ['生效', '失效']), selectFilter('signingChannel', '协议签署模式', ['CROS签署', '银行APP签署', '自动签署']), selectFilter('approvalScheme', '核定方案', ['系统核定', '自主申请'])]} columns={columns} fetcher={fetchRules} detailTitle={(record) => `贴息规则配置：${record.crosRuleNo}`} hideDetailFooter detailRenderer={(record) => <InterestRuleDetail recordId={record.id} embedded />} />;
 }

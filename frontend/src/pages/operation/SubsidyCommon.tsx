@@ -42,7 +42,7 @@ function defaultActionContent<T extends object>(record: T) {
   return <Descriptions bordered column={1} size="small">{Object.entries(record as Record<string, unknown>).map(([key, value]) => <Descriptions.Item key={key} label={key}>{displayValue(value)}</Descriptions.Item>)}</Descriptions>;
 }
 
-export function SubsidyListPage<T extends object>({ title, description, filters, columns, fetcher, showHeading = false, renderActionContent, detailRenderer, detailTitle = `${title} - 详情`, detailWidth = 'min(960px, 100vw)' }: {
+export function SubsidyListPage<T extends object>({ title, description, filters, columns, fetcher, showHeading = false, renderActionContent, detailRenderer, detailTitle = `${title} - 详情`, detailWidth = 'min(960px, 100vw)', hideDetailFooter = false }: {
   title: string;
   description: string;
   filters: FilterConfig[];
@@ -53,6 +53,7 @@ export function SubsidyListPage<T extends object>({ title, description, filters,
   detailRenderer?: SubsidyDetailRenderer<T>;
   detailTitle?: ReactNode | ((record: T) => ReactNode);
   detailWidth?: number | string;
+  hideDetailFooter?: boolean;
 }) {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,7 +95,7 @@ export function SubsidyListPage<T extends object>({ title, description, filters,
     <Card className="filter-card"><Filter configs={filters} onSearch={handleSearch} /></Card>
     {error && <Alert type="error" showIcon message={error} action={<Button size="small" onClick={() => void loadData(pagination.current, pagination.pageSize, query)}>重试</Button>} className="page-alert" />}
     <Card className="table-card"><DataTable columns={resolvedColumns} dataSource={data} loading={loading} pagination={pagination} onPageChange={handlePageChange} /></Card>
-    <ListActionDrawer open={detailState !== null} title={detailHeading} width={detailWidth} className="subsidy-detail-drawer" onClose={() => setDetailState(null)} footer={<Button type="primary" onClick={() => setDetailState(null)}>关闭</Button>}>
+    <ListActionDrawer open={detailState !== null} title={detailHeading} width={detailWidth} className="subsidy-detail-drawer" onClose={() => setDetailState(null)} footer={hideDetailFooter ? null : <Button type="primary" onClick={() => setDetailState(null)}>关闭</Button>}>
       {detailState && detailRenderer?.(detailState)}
     </ListActionDrawer>
     <ListActionDrawer open={actionState !== null} title={actionState ? `${title} - ${actionState.action}` : title} onClose={() => setActionState(null)} footer={<Button type="primary" onClick={() => setActionState(null)}>关闭</Button>}>
@@ -111,10 +112,14 @@ export function DetailShell({ title, loading, error, children, embedded = false 
   return <div className="page-container subsidy-detail-page"><div className="page-heading"><div><Title level={3}>{title}</Title><Paragraph type="secondary">贴息运营详情</Paragraph></div><Button onClick={() => navigate(-1)}>返回列表</Button></div>{children}</div>;
 }
 
-export function DetailSection({ title, items, children }: { title: string; items?: Array<{ label: string; value: React.ReactNode }>; children?: React.ReactNode }) {
-  return <Card title={title} className="subsidy-detail-card">{items && <Descriptions column={{ xs: 1, sm: 2, lg: 3 }} bordered size="small" items={items.map((item) => ({ key: item.label, label: item.label, children: item.value }))} />}{children}</Card>;
+export function DetailSection({ title, items, children, layout = 'descriptions' }: { title: string; items?: Array<{ label: React.ReactNode; value: React.ReactNode }>; children?: React.ReactNode; layout?: 'descriptions' | 'plain-two-column' | 'plain-three-column' }) {
+  return <Card title={title} className={`subsidy-detail-card${layout === 'plain-two-column' ? ' subsidy-detail-card-plain' : ''}${layout === 'plain-three-column' ? ' subsidy-detail-card-three' : ''}`}>
+    {items && (layout === 'plain-two-column' || layout === 'plain-three-column') && <div className={`subsidy-detail-field-grid${layout === 'plain-three-column' ? ' subsidy-detail-field-grid-three' : ''}`}>{items.map((item, index) => <div className={`subsidy-detail-field${layout === 'plain-three-column' ? ' subsidy-detail-field-three' : ''}`} key={index}><span className="subsidy-detail-field-label">{item.label}</span><div className="subsidy-detail-field-value">{item.value}</div></div>)}</div>}
+    {items && layout === 'descriptions' && <Descriptions column={{ xs: 1, sm: 2, lg: 3 }} bordered size="small" items={items.map((item, index) => ({ key: index, label: item.label, children: item.value }))} />}
+    {children}
+  </Card>;
 }
 
-export function objectItems(record: Record<string, string | number>, labels?: string[]) {
+export function objectItems(record: Record<string, React.ReactNode>, labels?: string[]) {
   return Object.entries(record).filter(([label]) => !labels || labels.includes(label)).map(([label, value]) => ({ label, value: typeof value === 'number' ? value.toLocaleString('zh-CN') : value }));
 }
